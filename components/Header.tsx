@@ -33,9 +33,6 @@ export const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
           <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
           Guest Access
         </div>
-        <button className="px-4 py-2 bg-white text-black text-sm font-semibold rounded-lg hover:bg-gray-200 transition-colors">
-          Go Pro
-        </button>
       </div>
     </header>
   );

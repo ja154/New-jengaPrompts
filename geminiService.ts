@@ -1,8 +1,9 @@
 
-import { GoogleGenAI } from "@google/genai";
+import { GoogleGenAI, Type } from "@google/genai";
 import { Modality, WorkspaceState } from "./types";
 
 const MODEL_NAME = 'gemini-flash-latest';
+const JSON_MODEL_NAME = 'gemini-3-flash-preview';
 
 export const enhancePrompt = async (
   state: WorkspaceState,
@@ -56,5 +57,33 @@ export const enhancePrompt = async (
   } catch (error) {
     console.error("Gemini API Error:", error);
     onChunk("\n\n[Error: Failed to connect to the Jenga Engine. Check your network or API key.]");
+  }
+};
+
+export const convertToJSON = async (promptText: string): Promise<string> => {
+  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY || '' });
+  
+  try {
+    const response = await ai.models.generateContent({
+      model: JSON_MODEL_NAME,
+      contents: `Structure the following AI prompt into a well-organized JSON object. Extract logical components such as 'core_objective', 'style_and_format', 'technical_constraints', and 'raw_prompt'. \n\nPrompt: ${promptText}`,
+      config: {
+        responseMimeType: "application/json",
+        responseSchema: {
+          type: Type.OBJECT,
+          properties: {
+            core_objective: { type: Type.STRING },
+            style_and_format: { type: Type.STRING },
+            technical_constraints: { type: Type.ARRAY, items: { type: Type.STRING } },
+            raw_prompt: { type: Type.STRING }
+          },
+          required: ["core_objective", "style_and_format", "raw_prompt"]
+        }
+      }
+    });
+    return response.text || '';
+  } catch (error) {
+    console.error("JSON Conversion Error:", error);
+    return JSON.stringify({ error: "Failed to structure as JSON" }, null, 2);
   }
 };

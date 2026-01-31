@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { MODALITIES, MODALITY_SPECIFIC_CONTROLS } from '../constants';
 import { Modality, WorkspaceState, GeneratedPrompt, PromptTemplate } from '../types';
-import { enhancePrompt } from '../geminiService';
+import { enhancePrompt, convertToJSON } from '../geminiService';
 
 interface WorkspaceProps {
   onGenerated: (prompt: GeneratedPrompt) => void;
@@ -19,7 +19,10 @@ export const Workspace: React.FC<WorkspaceProps> = ({ onGenerated, initialTempla
   });
   
   const [output, setOutput] = useState('');
+  const [jsonOutput, setJsonOutput] = useState<string | null>(null);
+  const [viewMode, setViewMode] = useState<'text' | 'json'>('text');
   const [isGenerating, setIsGenerating] = useState(false);
+  const [isConverting, setIsConverting] = useState(false);
   const outputRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -38,7 +41,7 @@ export const Workspace: React.FC<WorkspaceProps> = ({ onGenerated, initialTempla
     if (outputRef.current) {
       outputRef.current.scrollTop = outputRef.current.scrollHeight;
     }
-  }, [output]);
+  }, [output, jsonOutput, viewMode]);
 
   const handleParamChange = (name: string, value: string) => {
     setState(prev => ({
@@ -52,6 +55,8 @@ export const Workspace: React.FC<WorkspaceProps> = ({ onGenerated, initialTempla
     
     setIsGenerating(true);
     setOutput('');
+    setJsonOutput(null);
+    setViewMode('text');
     let fullOutput = '';
     
     await enhancePrompt(state, (chunk) => {
@@ -71,8 +76,23 @@ export const Workspace: React.FC<WorkspaceProps> = ({ onGenerated, initialTempla
     });
   };
 
+  const handleConvertToJson = async () => {
+    if (!output || isConverting) return;
+    if (jsonOutput) {
+      setViewMode('json');
+      return;
+    }
+    
+    setIsConverting(true);
+    const structured = await convertToJSON(output);
+    setJsonOutput(structured);
+    setViewMode('json');
+    setIsConverting(false);
+  };
+
   const handleCopy = () => {
-    navigator.clipboard.writeText(output);
+    const textToCopy = viewMode === 'json' ? jsonOutput || '' : output;
+    navigator.clipboard.writeText(textToCopy);
   };
 
   return (
@@ -177,13 +197,33 @@ export const Workspace: React.FC<WorkspaceProps> = ({ onGenerated, initialTempla
         {/* Output Column */}
         <section className="space-y-4 flex flex-col h-full">
           <div className="flex items-center justify-between">
-            <h2 className="text-sm font-bold uppercase tracking-widest text-indigo-400">4. Final Output</h2>
+            <div className="flex items-center gap-3">
+              <h2 className="text-sm font-bold uppercase tracking-widest text-indigo-400">4. Final Output</h2>
+              {output && !isGenerating && (
+                <div className="flex bg-white/5 rounded-lg p-0.5 border border-white/10">
+                  <button 
+                    onClick={() => setViewMode('text')}
+                    className={`px-3 py-1 text-[10px] font-bold rounded-md transition-all ${viewMode === 'text' ? 'bg-indigo-600 text-white' : 'text-gray-500 hover:text-gray-300'}`}
+                  >
+                    TEXT
+                  </button>
+                  <button 
+                    onClick={handleConvertToJson}
+                    disabled={isConverting}
+                    className={`px-3 py-1 text-[10px] font-bold rounded-md transition-all flex items-center gap-1 ${viewMode === 'json' ? 'bg-indigo-600 text-white' : 'text-gray-500 hover:text-gray-300'}`}
+                  >
+                    {isConverting && <div className="w-2 h-2 border-t-2 border-white rounded-full animate-spin"></div>}
+                    JSON
+                  </button>
+                </div>
+              )}
+            </div>
             {output && (
               <button 
                 onClick={handleCopy}
                 className="text-[10px] text-indigo-400 hover:text-indigo-300 font-bold uppercase tracking-tighter"
               >
-                Copy to Clipboard
+                Copy {viewMode.toUpperCase()}
               </button>
             )}
           </div>
@@ -204,15 +244,15 @@ export const Workspace: React.FC<WorkspaceProps> = ({ onGenerated, initialTempla
               </div>
             ) : (
               <div className="whitespace-pre-wrap animate-in fade-in duration-1000">
-                {output}
-                {isGenerating && <span className="inline-block w-2 h-5 bg-indigo-500 ml-1 animate-pulse align-middle"></span>}
+                {viewMode === 'text' ? output : (jsonOutput || 'Structuring...')}
+                {isGenerating && viewMode === 'text' && <span className="inline-block w-2 h-5 bg-indigo-500 ml-1 animate-pulse align-middle"></span>}
               </div>
             )}
             
             {output && (
               <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
                  <div className="bg-indigo-600/20 text-indigo-400 text-[10px] px-2 py-1 rounded border border-indigo-500/20 backdrop-blur-sm">
-                   Master Prompt
+                   {viewMode === 'text' ? 'Master Prompt' : 'Structured JSON'}
                  </div>
               </div>
             )}

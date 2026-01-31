@@ -1,6 +1,7 @@
 
 import React, { useState } from 'react';
 import { GeneratedPrompt } from '../types';
+import { convertToJSON } from '../geminiService';
 
 interface ResultCardProps {
   prompt: GeneratedPrompt;
@@ -9,11 +10,32 @@ interface ResultCardProps {
 
 export const ResultCard: React.FC<ResultCardProps> = ({ prompt, onToggleBookmark }) => {
   const [copied, setCopied] = useState(false);
+  const [jsonView, setJsonView] = useState(false);
+  const [jsonContent, setJsonContent] = useState<string | null>(null);
+  const [isConverting, setIsConverting] = useState(false);
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(prompt.enhancedPrompt);
+    navigator.clipboard.writeText(jsonView && jsonContent ? jsonContent : prompt.enhancedPrompt);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleToggleJson = async () => {
+    if (jsonView) {
+      setJsonView(false);
+      return;
+    }
+
+    if (jsonContent) {
+      setJsonView(true);
+      return;
+    }
+
+    setIsConverting(true);
+    const structured = await convertToJSON(prompt.enhancedPrompt);
+    setJsonContent(structured);
+    setJsonView(true);
+    setIsConverting(false);
   };
 
   const formatDate = (ts: number) => {
@@ -55,14 +77,14 @@ export const ResultCard: React.FC<ResultCardProps> = ({ prompt, onToggleBookmark
             onClick={handleCopy}
             className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition-all ${copied ? 'bg-green-600 text-white' : 'bg-white/5 hover:bg-white/10 text-gray-300'}`}
           >
-            {copied ? 'Copied!' : 'Copy Prompt'}
+            {copied ? 'Copied!' : 'Copy'}
           </button>
         </div>
       </div>
       
       <div className="p-6 bg-black/20">
         <div className="mono text-xs text-gray-400 leading-relaxed whitespace-pre-wrap max-h-48 overflow-y-auto">
-          {prompt.enhancedPrompt}
+          {jsonView ? (jsonContent || 'Structuring...') : prompt.enhancedPrompt}
         </div>
       </div>
       
@@ -70,8 +92,13 @@ export const ResultCard: React.FC<ResultCardProps> = ({ prompt, onToggleBookmark
         <div className="flex gap-2">
           <span className="text-[10px] text-gray-500">Enhanced via Gemini 2.5 Flash</span>
         </div>
-        <button className="text-[10px] text-indigo-400 hover:text-white uppercase font-bold tracking-tighter transition-colors">
-          Optimize Further
+        <button 
+          onClick={handleToggleJson}
+          disabled={isConverting}
+          className={`text-[10px] uppercase font-bold tracking-tighter transition-colors flex items-center gap-1 ${jsonView ? 'text-indigo-400' : 'text-gray-500 hover:text-white'}`}
+        >
+          {isConverting && <div className="w-2 h-2 border-t-2 border-indigo-400 rounded-full animate-spin"></div>}
+          {jsonView ? 'View Raw Prompt' : 'Convert to JSON'}
         </button>
       </div>
     </div>
