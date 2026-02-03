@@ -18,6 +18,7 @@ export const TEMPLATES: PromptTemplate[] = [
     category: Category.Surreal,
     modality: 'image',
     seed: 'A futuristic Tokyo alleyway at night',
+    tags: ['Neon', 'Cyberpunk', 'Environment'],
     parameters: {
       Style: 'Cinematic Hyper-realistic',
       Lighting: 'Neon Blue and Hot Pink',
@@ -32,6 +33,7 @@ export const TEMPLATES: PromptTemplate[] = [
     category: Category.Tech,
     modality: 'code',
     seed: 'Refactor this list comprehension to be more efficient',
+    tags: ['Optimization', 'Data', 'Clean Code'],
     parameters: {
       Language: 'Python',
       Task: 'Optimization',
@@ -45,6 +47,7 @@ export const TEMPLATES: PromptTemplate[] = [
     category: Category.Lifestyle,
     modality: 'audio',
     seed: 'A story about a lost sailor finding home',
+    tags: ['Narrative', 'Emotional', 'Voice'],
     parameters: {
       Vibe: 'Bittersweet',
       Tempo: 'Slow',
@@ -58,6 +61,7 @@ export const TEMPLATES: PromptTemplate[] = [
     category: Category.Business,
     modality: 'image',
     seed: 'A geometric monogram for a jewelry company',
+    tags: ['Minimalist', 'Branding', 'Vector'],
     parameters: {
       Style: 'Minimalist Vector',
       Colors: 'Gold and Charcoal',
@@ -71,6 +75,7 @@ export const TEMPLATES: PromptTemplate[] = [
     category: Category.Creative,
     modality: 'video',
     seed: 'The Alps during golden hour',
+    tags: ['Aerial', 'Nature', 'Cinematic'],
     parameters: {
       POV: 'Aerial Drone',
       Movement: 'Slow Tracking',
@@ -85,6 +90,7 @@ export const TEMPLATES: PromptTemplate[] = [
     category: Category.Business,
     modality: 'text',
     seed: 'Write a headline and CTA for a productivity tool',
+    tags: ['SaaS', 'Copywriting', 'Conversion'],
     parameters: {
       Tone: 'Professional',
       Goal: 'Conversion',

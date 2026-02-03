@@ -9,6 +9,7 @@ export interface PromptTemplate {
   modality: Modality;
   seed: string;
   parameters: Record<string, string>;
+  tags?: string[];
 }
 
 export interface GeneratedPrompt {
