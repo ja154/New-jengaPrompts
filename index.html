@@ -11,9 +11,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
       body {
-        font-family: 'Inter', sans-serif;
-        background-color: #030712;
-        color: #f3f4f6;
+        font-family: 'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif;
+        background-color: #f5f5f5;
+        color: #1a1a1a;
         margin: 0;
         overflow-x: hidden;
       }
@@ -21,16 +21,13 @@
         font-family: 'JetBrains Mono', monospace;
       }
       .glass {
-        background: rgba(17, 24, 39, 0.7);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: #ffffff;
+        border-radius: 24px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        border: 1px solid #e5e5e5;
       }
       .mesh-gradient {
-        background: radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), 
-                    radial-gradient(at 50% 0%, hsla(225,39%,30%,1) 0, transparent 50%), 
-                    radial-gradient(at 100% 0%, hsla(339,49%,30%,1) 0, transparent 50%);
-        background-attachment: fixed;
+        background-color: #f5f5f5;
       }
       ::-webkit-scrollbar {
         width: 6px;
@@ -64,8 +61,10 @@
   }
 }
 </script>
+<link rel="stylesheet" href="/index.css">
 </head>
   <body class="mesh-gradient min-h-screen">
     <div id="root"></div>
-  </body>
+  <script type="module" src="/index.tsx"></script>
+</body>
 </html>

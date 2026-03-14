@@ -70,7 +70,7 @@ export const PromptLibrary: React.FC<LibraryProps> = ({ onInject }) => {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search by title, description or tag..."
-              className="w-full pl-12 pr-6 py-4 glass rounded-2xl outline-none focus:ring-2 focus:ring-indigo-500 transition-all border-white/10"
+              className="w-full pl-12 pr-6 py-4 glass rounded-2xl outline-none focus:ring-2 focus:ring-indigo-500 transition-all border-gray-200 text-gray-900 bg-white"
             />
           </div>
           
@@ -96,8 +96,8 @@ export const PromptLibrary: React.FC<LibraryProps> = ({ onInject }) => {
               className={`
                 px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap transition-all
                 ${selectedCategories.length === 0 
-                  ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/20' 
-                  : 'bg-white/5 text-gray-400 hover:bg-white/10'}
+                  ? 'bg-indigo-600 text-white shadow-md' 
+                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}
               `}
             >
               All
@@ -109,8 +109,8 @@ export const PromptLibrary: React.FC<LibraryProps> = ({ onInject }) => {
                 className={`
                   px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap transition-all flex items-center gap-2
                   ${selectedCategories.includes(cat) 
-                    ? 'bg-indigo-600/30 border-indigo-500/50 text-white border' 
-                    : 'bg-white/5 text-gray-400 hover:bg-white/10 border border-transparent'}
+                    ? 'bg-indigo-50 border-indigo-200 text-indigo-700 border' 
+                    : 'bg-gray-50 text-gray-600 hover:bg-gray-100 border border-transparent'}
                 `}
               >
                 {selectedCategories.includes(cat) && (
@@ -135,8 +135,8 @@ export const PromptLibrary: React.FC<LibraryProps> = ({ onInject }) => {
                 className={`
                   px-3 py-1.5 rounded-lg text-[11px] font-medium transition-all
                   ${selectedTags.includes(tag)
-                    ? 'bg-indigo-500 text-white'
-                    : 'bg-indigo-500/10 text-indigo-300 hover:bg-indigo-500/20'}
+                    ? 'bg-indigo-100 text-indigo-800'
+                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}
                 `}
               >
                 #{tag}
@@ -151,25 +151,25 @@ export const PromptLibrary: React.FC<LibraryProps> = ({ onInject }) => {
         {filteredTemplates.map(template => (
           <div 
             key={template.id}
-            className="glass rounded-2xl border-white/10 hover:border-indigo-500/30 transition-all group overflow-hidden flex flex-col"
+            className="glass rounded-2xl border-gray-200 hover:border-indigo-300 transition-all group overflow-hidden flex flex-col bg-white"
           >
             <div className="p-6 flex-1">
               <div className="flex items-center justify-between mb-4">
-                <span className="text-[10px] font-bold uppercase px-2 py-0.5 bg-indigo-500/20 text-indigo-400 rounded">
+                <span className="text-[10px] font-bold uppercase px-2 py-0.5 bg-indigo-50 text-indigo-700 rounded">
                   {template.modality}
                 </span>
                 <span className="text-[10px] font-bold text-gray-500 uppercase">
                   {template.category}
                 </span>
               </div>
-              <h3 className="text-lg font-bold mb-2 group-hover:text-indigo-400 transition-colors">{template.title}</h3>
-              <p className="text-sm text-gray-400 line-clamp-2 mb-4 leading-relaxed">
+              <h3 className="text-lg font-bold mb-2 group-hover:text-indigo-600 transition-colors text-gray-900">{template.title}</h3>
+              <p className="text-sm text-gray-500 line-clamp-2 mb-4 leading-relaxed">
                 {template.description}
               </p>
               
               <div className="flex flex-wrap gap-1.5 mb-4">
                 {template.tags?.map(tag => (
-                  <span key={tag} className="text-[9px] text-indigo-400 bg-indigo-500/5 px-1.5 py-0.5 rounded border border-indigo-500/10">
+                  <span key={tag} className="text-[9px] text-indigo-700 bg-indigo-50 px-1.5 py-0.5 rounded border border-indigo-100">
                     #{tag}
                   </span>
                 ))}
@@ -177,7 +177,7 @@ export const PromptLibrary: React.FC<LibraryProps> = ({ onInject }) => {
 
               <div className="flex flex-wrap gap-2 mt-auto">
                 {Object.entries(template.parameters).map(([k, v]) => (
-                  <span key={k} className="text-[9px] bg-white/5 border border-white/10 px-1.5 py-0.5 rounded text-gray-500">
+                  <span key={k} className="text-[9px] bg-gray-50 border border-gray-200 px-1.5 py-0.5 rounded text-gray-600">
                     {k}: {v}
                   </span>
                 ))}
@@ -186,7 +186,7 @@ export const PromptLibrary: React.FC<LibraryProps> = ({ onInject }) => {
             
             <button 
               onClick={() => onInject(template)}
-              className="w-full py-4 bg-white/5 border-t border-white/10 text-xs font-bold uppercase tracking-widest text-indigo-400 hover:bg-indigo-600 hover:text-white transition-all"
+              className="w-full py-4 bg-gray-50 border-t border-gray-200 text-xs font-bold uppercase tracking-widest text-indigo-600 hover:bg-indigo-50 transition-all"
             >
               Inject to Workspace
             </button>
@@ -194,7 +194,7 @@ export const PromptLibrary: React.FC<LibraryProps> = ({ onInject }) => {
         ))}
 
         {filteredTemplates.length === 0 && (
-          <div className="col-span-full py-32 text-center glass rounded-2xl border-dashed border-2 border-white/5">
+          <div className="col-span-full py-32 text-center glass rounded-2xl border-dashed border-2 border-gray-200">
             <p className="text-gray-500 mb-2">No templates match your current filter combination.</p>
             <button 
               onClick={clearFilters}

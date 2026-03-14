@@ -47,7 +47,7 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="flex h-screen overflow-hidden text-gray-100 selection:bg-indigo-500/30">
+    <div className="flex h-screen overflow-hidden text-gray-900 selection:bg-indigo-500/30">
       <Sidebar 
         isOpen={isSidebarOpen} 
         setOpen={setSidebarOpen}
@@ -76,9 +76,9 @@ const App: React.FC = () => {
             
             {(activeTab === 'history' || activeTab === 'bookmarks') && (
               <div className="space-y-6">
-                <div className="flex items-center justify-between border-b border-white/10 pb-4">
+                <div className="flex items-center justify-between border-b border-gray-200 pb-4">
                   <h2 className="text-2xl font-bold capitalize">{activeTab}</h2>
-                  <span className="text-sm text-gray-400">
+                  <span className="text-sm text-gray-500">
                     {activeTab === 'history' ? history.length : bookmarks.length} Prompts
                   </span>
                 </div>
@@ -91,11 +91,11 @@ const App: React.FC = () => {
                     />
                   ))}
                   {(activeTab === 'history' ? history : bookmarks).length === 0 && (
-                    <div className="py-20 text-center glass rounded-2xl border-dashed border-2 border-white/5">
-                      <p className="text-gray-400">No prompts found in your {activeTab}.</p>
+                    <div className="py-20 text-center glass rounded-2xl border-dashed border-2 border-gray-200">
+                      <p className="text-gray-500">No prompts found in your {activeTab}.</p>
                       <button 
                         onClick={() => setActiveTab('workspace')}
-                        className="mt-4 text-indigo-400 hover:text-indigo-300 underline underline-offset-4"
+                        className="mt-4 text-indigo-600 hover:text-indigo-500 underline underline-offset-4"
                       >
                         Go to Workspace
                       </button>
