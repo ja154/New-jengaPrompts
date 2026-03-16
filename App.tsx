@@ -12,6 +12,7 @@ const App: React.FC = () => {
   const [history, setHistory] = useState<GeneratedPrompt[]>([]);
   const [bookmarks, setBookmarks] = useState<GeneratedPrompt[]>([]);
   const [selectedTemplate, setSelectedTemplate] = useState<PromptTemplate | null>(null);
+  const [activePrompt, setActivePrompt] = useState<GeneratedPrompt | null>(null);
   const [isSidebarOpen, setSidebarOpen] = useState(true);
 
   // Load persistence
@@ -29,7 +30,27 @@ const App: React.FC = () => {
   }, [history, bookmarks]);
 
   const addToHistory = (prompt: GeneratedPrompt) => {
-    setHistory(prev => [prompt, ...prev].slice(0, 10));
+    setHistory(prev => {
+      const existingIndex = prev.findIndex(p => p.id === prompt.id);
+      if (existingIndex >= 0) {
+        const newHistory = [...prev];
+        newHistory[existingIndex] = prompt;
+        return newHistory;
+      }
+      return [prompt, ...prev].slice(0, 10);
+    });
+    setBookmarks(prev => {
+      const existingIndex = prev.findIndex(p => p.id === prompt.id);
+      if (existingIndex >= 0) {
+        const newBookmarks = [...prev];
+        newBookmarks[existingIndex] = prompt;
+        return newBookmarks;
+      }
+      return prev;
+    });
+    if (activePrompt && activePrompt.id === prompt.id) {
+      setActivePrompt(prompt);
+    }
   };
 
   const toggleBookmark = (prompt: GeneratedPrompt) => {
@@ -67,6 +88,8 @@ const App: React.FC = () => {
                 onGenerated={addToHistory} 
                 initialTemplate={selectedTemplate}
                 onClearTemplate={() => setSelectedTemplate(null)}
+                activePrompt={activePrompt}
+                onClearActivePrompt={() => setActivePrompt(null)}
               />
             )}
             
@@ -88,6 +111,10 @@ const App: React.FC = () => {
                       key={prompt.id} 
                       prompt={prompt} 
                       onToggleBookmark={() => toggleBookmark(prompt)} 
+                      onEdit={() => {
+                        setActivePrompt(prompt);
+                        setActiveTab('workspace');
+                      }}
                     />
                   ))}
                   {(activeTab === 'history' ? history : bookmarks).length === 0 && (

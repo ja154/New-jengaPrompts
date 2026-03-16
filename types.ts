@@ -12,6 +12,14 @@ export interface PromptTemplate {
   tags?: string[];
 }
 
+export interface PromptVersion {
+  id: string;
+  timestamp: number;
+  originalSeed: string;
+  enhancedPrompt: string;
+  params: Record<string, string>;
+}
+
 export interface GeneratedPrompt {
   id: string;
   timestamp: number;
@@ -19,6 +27,8 @@ export interface GeneratedPrompt {
   enhancedPrompt: string;
   modality: Modality;
   isBookmarked: boolean;
+  params?: Record<string, string>;
+  versions?: PromptVersion[];
 }
 
 export interface WorkspaceState {

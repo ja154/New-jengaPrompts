@@ -1,8 +1,9 @@
 
-import { GoogleGenAI, Type } from "@google/genai";
+import { GoogleGenAI, Type, ThinkingLevel } from "@google/genai";
 import { Modality, WorkspaceState } from "./types";
 
-const MODEL_NAME = 'gemini-flash-latest';
+const MODEL_NAME = 'gemini-3-flash-preview';
+const THINKING_MODEL_NAME = 'gemini-3.1-pro-preview';
 const JSON_MODEL_NAME = 'gemini-3-flash-preview';
 
 /**
@@ -71,11 +72,11 @@ export const enhancePrompt = async (
 
   try {
     const stream = await ai.models.generateContentStream({
-      model: MODEL_NAME,
+      model: state.isThinking ? THINKING_MODEL_NAME : MODEL_NAME,
       contents: prompt,
       config: {
         systemInstruction,
-        thinkingConfig: state.isThinking ? { thinkingBudget: 24576 } : { thinkingBudget: 0 },
+        ...(state.isThinking ? { thinkingConfig: { thinkingLevel: ThinkingLevel.HIGH } } : {}),
         temperature: 0.8,
       },
     });

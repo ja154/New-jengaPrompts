@@ -8,9 +8,11 @@ interface WorkspaceProps {
   onGenerated: (prompt: GeneratedPrompt) => void;
   initialTemplate: PromptTemplate | null;
   onClearTemplate: () => void;
+  activePrompt?: GeneratedPrompt | null;
+  onClearActivePrompt?: () => void;
 }
 
-export const Workspace: React.FC<WorkspaceProps> = ({ onGenerated, initialTemplate, onClearTemplate }) => {
+export const Workspace: React.FC<WorkspaceProps> = ({ onGenerated, initialTemplate, onClearTemplate, activePrompt, onClearActivePrompt }) => {
   const [state, setState] = useState<WorkspaceState>({
     modality: 'text',
     seed: '',
@@ -33,9 +35,26 @@ export const Workspace: React.FC<WorkspaceProps> = ({ onGenerated, initialTempla
         params: initialTemplate.parameters,
         isThinking: false
       });
+      setOutput('');
+      setJsonOutput(null);
       onClearTemplate();
+      if (onClearActivePrompt) onClearActivePrompt();
     }
-  }, [initialTemplate, onClearTemplate]);
+  }, [initialTemplate, onClearTemplate, onClearActivePrompt]);
+
+  useEffect(() => {
+    if (activePrompt) {
+      setState({
+        modality: activePrompt.modality,
+        seed: activePrompt.originalSeed,
+        params: activePrompt.params || {},
+        isThinking: false
+      });
+      setOutput(activePrompt.enhancedPrompt);
+      setJsonOutput(null);
+      setViewMode('text');
+    }
+  }, [activePrompt]);
 
   useEffect(() => {
     if (outputRef.current) {
@@ -66,14 +85,37 @@ export const Workspace: React.FC<WorkspaceProps> = ({ onGenerated, initialTempla
     
     setIsGenerating(false);
     
-    onGenerated({
+    const newVersion = {
       id: Math.random().toString(36).substr(2, 9),
       timestamp: Date.now(),
       originalSeed: state.seed,
       enhancedPrompt: fullOutput,
-      modality: state.modality,
-      isBookmarked: false
-    });
+      params: state.params
+    };
+
+    if (activePrompt) {
+      const updatedPrompt: GeneratedPrompt = {
+        ...activePrompt,
+        timestamp: newVersion.timestamp,
+        originalSeed: newVersion.originalSeed,
+        enhancedPrompt: newVersion.enhancedPrompt,
+        modality: state.modality,
+        params: state.params,
+        versions: [newVersion, ...(activePrompt.versions || [])]
+      };
+      onGenerated(updatedPrompt);
+    } else {
+      onGenerated({
+        id: Math.random().toString(36).substr(2, 9),
+        timestamp: newVersion.timestamp,
+        originalSeed: newVersion.originalSeed,
+        enhancedPrompt: newVersion.enhancedPrompt,
+        modality: state.modality,
+        isBookmarked: false,
+        params: state.params,
+        versions: [newVersion]
+      });
+    }
   };
 
   const handleConvertToJson = async () => {

@@ -6,9 +6,10 @@ import { convertToJSON } from '../geminiService';
 interface ResultCardProps {
   prompt: GeneratedPrompt;
   onToggleBookmark: () => void;
+  onEdit?: () => void;
 }
 
-export const ResultCard: React.FC<ResultCardProps> = ({ prompt, onToggleBookmark }) => {
+export const ResultCard: React.FC<ResultCardProps> = ({ prompt, onToggleBookmark, onEdit }) => {
   const [copied, setCopied] = useState(false);
   const [jsonView, setJsonView] = useState(false);
   const [jsonContent, setJsonContent] = useState<string | null>(null);
@@ -65,6 +66,14 @@ export const ResultCard: React.FC<ResultCardProps> = ({ prompt, onToggleBookmark
         </div>
         
         <div className="flex items-center gap-2">
+          {onEdit && (
+            <button 
+              onClick={onEdit}
+              className="px-4 py-2 rounded-lg text-xs font-bold transition-all bg-indigo-50 hover:bg-indigo-100 text-indigo-600"
+            >
+              Edit
+            </button>
+          )}
           <button 
             onClick={onToggleBookmark}
             className={`p-2 rounded-lg transition-colors ${prompt.isBookmarked ? 'text-yellow-500 bg-yellow-50' : 'text-gray-500 hover:bg-gray-100'}`}
