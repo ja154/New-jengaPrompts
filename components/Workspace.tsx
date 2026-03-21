@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { MODALITIES, MODALITY_SPECIFIC_CONTROLS } from '../constants';
 import { Modality, WorkspaceState, GeneratedPrompt, PromptTemplate } from '../types';
 import { enhancePrompt, convertToJSON } from '../geminiService';
@@ -20,6 +20,41 @@ export const Workspace: React.FC<WorkspaceProps> = ({ onGenerated, initialTempla
     isThinking: false
   });
   
+  const [past, setPast] = useState<WorkspaceState[]>([]);
+  const [future, setFuture] = useState<WorkspaceState[]>([]);
+
+  const updateState = useCallback((updater: (prev: WorkspaceState) => WorkspaceState) => {
+    setState(prev => {
+      const next = updater(prev);
+      if (
+        prev.seed !== next.seed || 
+        prev.modality !== next.modality || 
+        JSON.stringify(prev.params) !== JSON.stringify(next.params) || 
+        prev.isThinking !== next.isThinking
+      ) {
+        setPast(p => [...p, prev].slice(-50));
+        setFuture([]);
+      }
+      return next;
+    });
+  }, []);
+
+  const handleUndo = () => {
+    if (past.length === 0) return;
+    const previous = past[past.length - 1];
+    setPast(prev => prev.slice(0, prev.length - 1));
+    setFuture(prev => [state, ...prev]);
+    setState(previous);
+  };
+
+  const handleRedo = () => {
+    if (future.length === 0) return;
+    const next = future[0];
+    setFuture(prev => prev.slice(1));
+    setPast(prev => [...prev, state]);
+    setState(next);
+  };
+
   const [output, setOutput] = useState('');
   const [jsonOutput, setJsonOutput] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<'text' | 'json'>('text');
@@ -29,32 +64,32 @@ export const Workspace: React.FC<WorkspaceProps> = ({ onGenerated, initialTempla
 
   useEffect(() => {
     if (initialTemplate) {
-      setState({
+      updateState(() => ({
         modality: initialTemplate.modality,
         seed: initialTemplate.seed,
         params: initialTemplate.parameters,
         isThinking: false
-      });
+      }));
       setOutput('');
       setJsonOutput(null);
       onClearTemplate();
       if (onClearActivePrompt) onClearActivePrompt();
     }
-  }, [initialTemplate, onClearTemplate, onClearActivePrompt]);
+  }, [initialTemplate, onClearTemplate, onClearActivePrompt, updateState]);
 
   useEffect(() => {
     if (activePrompt) {
-      setState({
+      updateState(() => ({
         modality: activePrompt.modality,
         seed: activePrompt.originalSeed,
         params: activePrompt.params || {},
         isThinking: false
-      });
+      }));
       setOutput(activePrompt.enhancedPrompt);
       setJsonOutput(null);
       setViewMode('text');
     }
-  }, [activePrompt]);
+  }, [activePrompt, updateState]);
 
   useEffect(() => {
     if (outputRef.current) {
@@ -63,7 +98,7 @@ export const Workspace: React.FC<WorkspaceProps> = ({ onGenerated, initialTempla
   }, [output, jsonOutput, viewMode]);
 
   const handleParamChange = (name: string, value: string) => {
-    setState(prev => ({
+    updateState(prev => ({
       ...prev,
       params: { ...prev.params, [name]: value }
     }));
@@ -145,7 +180,7 @@ export const Workspace: React.FC<WorkspaceProps> = ({ onGenerated, initialTempla
           {MODALITIES.map((m) => (
             <button
               key={m.value}
-              onClick={() => setState(prev => ({ ...prev, modality: m.value, params: {} }))}
+              onClick={() => updateState(prev => ({ ...prev, modality: m.value, params: {} }))}
               className={`
                 flex flex-col items-center justify-center p-4 rounded-2xl transition-all border
                 ${state.modality === m.value 
@@ -164,10 +199,28 @@ export const Workspace: React.FC<WorkspaceProps> = ({ onGenerated, initialTempla
         {/* Input Column */}
         <section className="space-y-6">
           <div className="space-y-4">
-            <h2 className="text-sm font-bold uppercase tracking-widest text-indigo-600">2. Define Seed Idea</h2>
+            <div className="flex items-center justify-between">
+              <h2 className="text-sm font-bold uppercase tracking-widest text-indigo-600">2. Define Seed Idea</h2>
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={handleUndo}
+                  disabled={past.length === 0}
+                  className={`text-[10px] font-bold uppercase tracking-widest transition-colors ${past.length === 0 ? 'text-gray-300 cursor-not-allowed' : 'text-indigo-500 hover:text-indigo-700'}`}
+                >
+                  Undo
+                </button>
+                <button
+                  onClick={handleRedo}
+                  disabled={future.length === 0}
+                  className={`text-[10px] font-bold uppercase tracking-widest transition-colors ${future.length === 0 ? 'text-gray-300 cursor-not-allowed' : 'text-indigo-500 hover:text-indigo-700'}`}
+                >
+                  Redo
+                </button>
+              </div>
+            </div>
             <textarea
               value={state.seed}
-              onChange={(e) => setState(prev => ({ ...prev, seed: e.target.value }))}
+              onChange={(e) => updateState(prev => ({ ...prev, seed: e.target.value }))}
               placeholder="Describe your core concept in plain English..."
               className="w-full h-40 glass rounded-2xl p-6 text-lg focus:ring-2 focus:ring-indigo-500 outline-none transition-all resize-none border-gray-200 text-gray-900 bg-white"
             />
@@ -177,7 +230,7 @@ export const Workspace: React.FC<WorkspaceProps> = ({ onGenerated, initialTempla
             <div className="flex items-center justify-between">
               <h2 className="text-sm font-bold uppercase tracking-widest text-indigo-600">3. Technical Parameters</h2>
               <button 
-                onClick={() => setState(prev => ({ ...prev, params: {} }))}
+                onClick={() => updateState(prev => ({ ...prev, params: {} }))}
                 className="text-[10px] text-gray-500 hover:text-gray-900"
               >
                 Reset Params
@@ -227,7 +280,7 @@ export const Workspace: React.FC<WorkspaceProps> = ({ onGenerated, initialTempla
             <div className="flex items-center gap-3 px-4 py-3 glass rounded-2xl border-gray-200">
               <label className="text-xs font-semibold text-gray-600">Deeper Reasoning</label>
               <button
-                onClick={() => setState(prev => ({ ...prev, isThinking: !prev.isThinking }))}
+                onClick={() => updateState(prev => ({ ...prev, isThinking: !prev.isThinking }))}
                 className={`w-12 h-6 rounded-full p-1 transition-colors ${state.isThinking ? 'bg-indigo-600' : 'bg-gray-300'}`}
               >
                 <div className={`w-4 h-4 bg-white rounded-full shadow transition-transform ${state.isThinking ? 'translate-x-6' : 'translate-x-0'}`}></div>
