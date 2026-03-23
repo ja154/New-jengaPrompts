@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { Undo2, Redo2, RotateCcw } from 'lucide-react';
 import { MODALITIES, MODALITY_SPECIFIC_CONTROLS } from '../constants';
 import { Modality, WorkspaceState, GeneratedPrompt, PromptTemplate } from '../types';
 import { enhancePrompt, convertToJSON } from '../geminiService';
@@ -22,38 +23,109 @@ export const Workspace: React.FC<WorkspaceProps> = ({ onGenerated, initialTempla
   
   const [past, setPast] = useState<WorkspaceState[]>([]);
   const [future, setFuture] = useState<WorkspaceState[]>([]);
+  
+  const stateRef = useRef(state);
+  const isTypingRef = useRef(false);
+  const typingTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    stateRef.current = state;
+  }, [state]);
 
   const updateState = useCallback((updater: (prev: WorkspaceState) => WorkspaceState) => {
     setState(prev => {
       const next = updater(prev);
-      if (
-        prev.seed !== next.seed || 
+      
+      const seedChanged = prev.seed !== next.seed;
+      const othersChanged = 
         prev.modality !== next.modality || 
-        JSON.stringify(prev.params) !== JSON.stringify(next.params) || 
-        prev.isThinking !== next.isThinking
-      ) {
+        prev.isThinking !== next.isThinking || 
+        JSON.stringify(prev.params) !== JSON.stringify(next.params);
+
+      // Side effects should ideally be outside setState, but for atomicity we check here
+      // and we'll use a separate effect or a stable callback to update history.
+      // However, to keep it simple and reactive to the actual state change:
+      if (othersChanged) {
         setPast(p => [...p, prev].slice(-50));
         setFuture([]);
+        isTypingRef.current = false;
+        if (typingTimerRef.current) clearTimeout(typingTimerRef.current);
+      } else if (seedChanged) {
+        if (!isTypingRef.current) {
+          setPast(p => [...p, prev].slice(-50));
+          setFuture([]);
+          isTypingRef.current = true;
+        }
+        
+        if (typingTimerRef.current) clearTimeout(typingTimerRef.current);
+        typingTimerRef.current = setTimeout(() => {
+          isTypingRef.current = false;
+        }, 1000);
       }
+      
       return next;
     });
   }, []);
 
-  const handleUndo = () => {
-    if (past.length === 0) return;
-    const previous = past[past.length - 1];
-    setPast(prev => prev.slice(0, prev.length - 1));
-    setFuture(prev => [state, ...prev]);
-    setState(previous);
-  };
+  const handleUndo = useCallback(() => {
+    setPast(currentPast => {
+      if (currentPast.length === 0) return currentPast;
+      const newPast = [...currentPast];
+      const prevState = newPast.pop()!;
+      
+      setFuture(currentFuture => [stateRef.current, ...currentFuture]);
+      setState(prevState);
+      
+      isTypingRef.current = false;
+      if (typingTimerRef.current) clearTimeout(typingTimerRef.current);
+      
+      return newPast;
+    });
+  }, []);
 
-  const handleRedo = () => {
-    if (future.length === 0) return;
-    const next = future[0];
-    setFuture(prev => prev.slice(1));
-    setPast(prev => [...prev, state]);
-    setState(next);
-  };
+  const handleRedo = useCallback(() => {
+    setFuture(currentFuture => {
+      if (currentFuture.length === 0) return currentFuture;
+      const newFuture = [...currentFuture];
+      const nextState = newFuture.shift()!;
+      
+      setPast(currentPast => [...currentPast, stateRef.current].slice(-50));
+      setState(nextState);
+      
+      isTypingRef.current = false;
+      if (typingTimerRef.current) clearTimeout(typingTimerRef.current);
+      
+      return newFuture;
+    });
+  }, []);
+
+  // Keyboard shortcuts for Undo/Redo
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const isZ = e.key.toLowerCase() === 'z';
+      const isY = e.key.toLowerCase() === 'y';
+      const isMod = e.ctrlKey || e.metaKey;
+
+      if (isMod && isZ) {
+        if (e.shiftKey) {
+          e.preventDefault();
+          handleRedo();
+        } else {
+          // Only prevent default if we're not in an input/textarea 
+          // or if we want to override the browser's native undo
+          // For this app, we want to override it to handle the whole state
+          e.preventDefault();
+          handleUndo();
+        }
+      } else if (isMod && isY) {
+        e.preventDefault();
+        handleRedo();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [handleUndo, handleRedo]);
 
   const [output, setOutput] = useState('');
   const [jsonOutput, setJsonOutput] = useState<string | null>(null);
@@ -201,20 +273,31 @@ export const Workspace: React.FC<WorkspaceProps> = ({ onGenerated, initialTempla
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <h2 className="text-sm font-bold uppercase tracking-widest text-indigo-600">2. Define Seed Idea</h2>
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-1 bg-gray-100/50 p-1 rounded-xl border border-gray-200/50">
                 <button
                   onClick={handleUndo}
                   disabled={past.length === 0}
-                  className={`text-[10px] font-bold uppercase tracking-widest transition-colors ${past.length === 0 ? 'text-gray-300 cursor-not-allowed' : 'text-indigo-500 hover:text-indigo-700'}`}
+                  title="Undo (Ctrl+Z)"
+                  className={`p-1.5 rounded-lg transition-all ${past.length === 0 ? 'text-gray-300 cursor-not-allowed' : 'text-indigo-600 hover:bg-white hover:shadow-sm active:scale-95'}`}
                 >
-                  Undo
+                  <Undo2 size={14} />
                 </button>
                 <button
                   onClick={handleRedo}
                   disabled={future.length === 0}
-                  className={`text-[10px] font-bold uppercase tracking-widest transition-colors ${future.length === 0 ? 'text-gray-300 cursor-not-allowed' : 'text-indigo-500 hover:text-indigo-700'}`}
+                  title="Redo (Ctrl+Y)"
+                  className={`p-1.5 rounded-lg transition-all ${future.length === 0 ? 'text-gray-300 cursor-not-allowed' : 'text-indigo-600 hover:bg-white hover:shadow-sm active:scale-95'}`}
                 >
-                  Redo
+                  <Redo2 size={14} />
+                </button>
+                <div className="w-px h-4 bg-gray-200 mx-1" />
+                <button
+                  onClick={() => updateState(prev => ({ ...prev, seed: '' }))}
+                  disabled={!state.seed}
+                  title="Clear Seed"
+                  className={`p-1.5 rounded-lg transition-all ${!state.seed ? 'text-gray-300 cursor-not-allowed' : 'text-gray-500 hover:text-red-600 hover:bg-white hover:shadow-sm active:scale-95'}`}
+                >
+                  <RotateCcw size={14} />
                 </button>
               </div>
             </div>
