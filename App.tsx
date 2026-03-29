@@ -68,7 +68,7 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="flex h-screen overflow-hidden text-gray-900 selection:bg-indigo-500/30">
+    <div className="flex h-screen overflow-hidden text-gray-100 selection:bg-indigo-500/30 grid-pattern">
       <Sidebar 
         isOpen={isSidebarOpen} 
         setOpen={setSidebarOpen}
@@ -78,7 +78,7 @@ const App: React.FC = () => {
         bookmarkCount={bookmarks.length}
       />
       
-      <main className="flex-1 flex flex-col min-w-0 h-full relative">
+      <main className="flex-1 flex flex-col min-w-0 h-full relative bg-transparent">
         <Header toggleSidebar={() => setSidebarOpen(!isSidebarOpen)} />
         
         <div className="flex-1 overflow-y-auto px-4 md:px-8 pb-12 pt-4">
@@ -98,14 +98,19 @@ const App: React.FC = () => {
             )}
             
             {(activeTab === 'history' || activeTab === 'bookmarks') && (
-              <div className="space-y-6">
-                <div className="flex items-center justify-between border-b border-gray-200 pb-4">
-                  <h2 className="text-2xl font-bold capitalize">{activeTab}</h2>
-                  <span className="text-sm text-gray-500">
-                    {activeTab === 'history' ? history.length : bookmarks.length} Prompts
-                  </span>
+              <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                <div className="flex items-center justify-between border-b border-[#242429] pb-6">
+                  <div>
+                    <h2 className="text-3xl font-bold capitalize tracking-tight text-gray-100">{activeTab}</h2>
+                    <p className="text-[10px] text-gray-600 uppercase font-bold tracking-[0.2em] mt-1">Stored Prompt Archive</p>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <span className="px-3 py-1 rounded-full bg-[#1a1a1e] border border-[#242429] text-[10px] font-bold text-gray-500 uppercase tracking-widest">
+                      {activeTab === 'history' ? history.length : bookmarks.length} Records
+                    </span>
+                  </div>
                 </div>
-                <div className="grid grid-cols-1 gap-6">
+                <div className="grid grid-cols-1 gap-8">
                   {(activeTab === 'history' ? history : bookmarks).map(prompt => (
                     <ResultCard 
                       key={prompt.id} 
@@ -118,13 +123,18 @@ const App: React.FC = () => {
                     />
                   ))}
                   {(activeTab === 'history' ? history : bookmarks).length === 0 && (
-                    <div className="py-20 text-center glass rounded-2xl border-dashed border-2 border-gray-200">
-                      <p className="text-gray-500">No prompts found in your {activeTab}.</p>
+                    <div className="py-32 text-center glass rounded-2xl border-dashed border-2 border-[#242429]">
+                      <div className="w-16 h-16 bg-[#1a1a1e] rounded-full flex items-center justify-center mx-auto mb-6 border border-[#242429]">
+                        <svg className="w-8 h-8 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5S19.832 5.477 21 6.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                        </svg>
+                      </div>
+                      <p className="text-gray-500 font-bold uppercase text-[10px] tracking-widest mb-4">No prompts found in your {activeTab}</p>
                       <button 
                         onClick={() => setActiveTab('workspace')}
-                        className="mt-4 text-indigo-600 hover:text-indigo-500 underline underline-offset-4"
+                        className="text-indigo-400 font-bold text-xs uppercase tracking-widest hover:text-indigo-300 underline underline-offset-8 decoration-indigo-500/30"
                       >
-                        Go to Workspace
+                        Initialize Workspace
                       </button>
                     </div>
                   )}

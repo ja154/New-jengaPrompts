@@ -62,7 +62,7 @@ export const PromptLibrary: React.FC<LibraryProps> = ({ onInject }) => {
         {/* Search and Action Bar */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="flex-1 relative">
-            <svg className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
             <input
@@ -70,14 +70,14 @@ export const PromptLibrary: React.FC<LibraryProps> = ({ onInject }) => {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search by title, description or tag..."
-              className="w-full pl-12 pr-6 py-4 glass rounded-2xl outline-none focus:ring-2 focus:ring-indigo-500 transition-all border-gray-200 text-gray-900 bg-white"
+              className="w-full pl-12 pr-6 py-4 glass rounded-2xl outline-none focus:ring-1 focus:ring-indigo-500/50 transition-all border-[#242429] text-gray-100 bg-[#0a0a0c]/50 placeholder:text-gray-700"
             />
           </div>
           
           {hasActiveFilters && (
             <button 
               onClick={clearFilters}
-              className="text-xs font-bold text-indigo-400 hover:text-indigo-300 uppercase tracking-widest flex items-center gap-2 px-2"
+              className="text-[10px] font-bold text-indigo-400 hover:text-indigo-300 uppercase tracking-widest flex items-center gap-2 px-2"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -89,15 +89,15 @@ export const PromptLibrary: React.FC<LibraryProps> = ({ onInject }) => {
 
         {/* Categories Bar */}
         <div className="space-y-3">
-          <h4 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Categories</h4>
+          <h4 className="text-[10px] font-bold text-gray-600 uppercase tracking-widest ml-1">Categories</h4>
           <div className="flex items-center gap-2 overflow-x-auto pb-2 no-scrollbar">
             <button
               onClick={() => setSelectedCategories([])}
               className={`
-                px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap transition-all
+                px-4 py-2 rounded-full text-[10px] font-bold uppercase tracking-widest whitespace-nowrap transition-all border
                 ${selectedCategories.length === 0 
-                  ? 'bg-indigo-600 text-white shadow-md' 
-                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}
+                  ? 'bg-indigo-600 text-white border-indigo-500 shadow-[0_0_15px_rgba(99,102,241,0.3)]' 
+                  : 'bg-[#121215] border-[#242429] text-gray-500 hover:bg-[#1a1a1e] hover:text-gray-300'}
               `}
             >
               All
@@ -107,10 +107,10 @@ export const PromptLibrary: React.FC<LibraryProps> = ({ onInject }) => {
                 key={cat}
                 onClick={() => toggleCategory(cat)}
                 className={`
-                  px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap transition-all flex items-center gap-2
+                  px-4 py-2 rounded-full text-[10px] font-bold uppercase tracking-widest whitespace-nowrap transition-all flex items-center gap-2 border
                   ${selectedCategories.includes(cat) 
-                    ? 'bg-indigo-50 border-indigo-200 text-indigo-700 border' 
-                    : 'bg-gray-50 text-gray-600 hover:bg-gray-100 border border-transparent'}
+                    ? 'bg-indigo-500/10 border-indigo-500/40 text-indigo-300' 
+                    : 'bg-[#121215] border-[#242429] text-gray-500 hover:bg-[#1a1a1e] hover:text-gray-300'}
                 `}
               >
                 {selectedCategories.includes(cat) && (
@@ -126,17 +126,17 @@ export const PromptLibrary: React.FC<LibraryProps> = ({ onInject }) => {
 
         {/* Tags Bar */}
         <div className="space-y-3">
-          <h4 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">Sub-categories & Tags</h4>
+          <h4 className="text-[10px] font-bold text-gray-600 uppercase tracking-widest ml-1">Sub-categories & Tags</h4>
           <div className="flex flex-wrap gap-2">
             {allTags.map(tag => (
               <button
                 key={tag}
                 onClick={() => toggleTag(tag)}
                 className={`
-                  px-3 py-1.5 rounded-lg text-[11px] font-medium transition-all
+                  px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-widest transition-all border
                   ${selectedTags.includes(tag)
-                    ? 'bg-indigo-100 text-indigo-800'
-                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}
+                    ? 'bg-indigo-500/10 border-indigo-500/40 text-indigo-300'
+                    : 'bg-[#121215] border-[#242429] text-gray-500 hover:bg-[#1a1a1e] hover:text-gray-300'}
                 `}
               >
                 #{tag}
@@ -151,25 +151,25 @@ export const PromptLibrary: React.FC<LibraryProps> = ({ onInject }) => {
         {filteredTemplates.map(template => (
           <div 
             key={template.id}
-            className="glass rounded-2xl border-gray-200 hover:border-indigo-300 transition-all group overflow-hidden flex flex-col bg-white"
+            className="glass rounded-2xl border-[#242429] hover:border-indigo-500/50 transition-all group overflow-hidden flex flex-col bg-[#121215]"
           >
             <div className="p-6 flex-1">
               <div className="flex items-center justify-between mb-4">
-                <span className="text-[10px] font-bold uppercase px-2 py-0.5 bg-indigo-50 text-indigo-700 rounded">
+                <span className="text-[9px] font-bold uppercase px-2 py-0.5 bg-indigo-500/10 text-indigo-400 rounded border border-indigo-500/20">
                   {template.modality}
                 </span>
-                <span className="text-[10px] font-bold text-gray-500 uppercase">
+                <span className="text-[9px] font-bold text-gray-600 uppercase tracking-widest">
                   {template.category}
                 </span>
               </div>
-              <h3 className="text-lg font-bold mb-2 group-hover:text-indigo-600 transition-colors text-gray-900">{template.title}</h3>
+              <h3 className="text-lg font-bold mb-2 group-hover:text-indigo-400 transition-colors text-gray-100">{template.title}</h3>
               <p className="text-sm text-gray-500 line-clamp-2 mb-4 leading-relaxed">
                 {template.description}
               </p>
               
               <div className="flex flex-wrap gap-1.5 mb-4">
                 {template.tags?.map(tag => (
-                  <span key={tag} className="text-[9px] text-indigo-700 bg-indigo-50 px-1.5 py-0.5 rounded border border-indigo-100">
+                  <span key={tag} className="text-[9px] text-indigo-400 bg-indigo-500/5 px-1.5 py-0.5 rounded border border-indigo-500/10">
                     #{tag}
                   </span>
                 ))}
@@ -177,7 +177,7 @@ export const PromptLibrary: React.FC<LibraryProps> = ({ onInject }) => {
 
               <div className="flex flex-wrap gap-2 mt-auto">
                 {Object.entries(template.parameters).map(([k, v]) => (
-                  <span key={k} className="text-[9px] bg-gray-50 border border-gray-200 px-1.5 py-0.5 rounded text-gray-600">
+                  <span key={k} className="text-[9px] bg-[#1a1a1e] border border-[#242429] px-1.5 py-0.5 rounded text-gray-500 font-bold uppercase tracking-tighter">
                     {k}: {v}
                   </span>
                 ))}
@@ -186,7 +186,7 @@ export const PromptLibrary: React.FC<LibraryProps> = ({ onInject }) => {
             
             <button 
               onClick={() => onInject(template)}
-              className="w-full py-4 bg-gray-50 border-t border-gray-200 text-xs font-bold uppercase tracking-widest text-indigo-600 hover:bg-indigo-50 transition-all"
+              className="w-full py-4 bg-[#1a1a1e] border-t border-[#242429] text-[10px] font-bold uppercase tracking-[0.2em] text-indigo-400 hover:bg-indigo-500/10 transition-all"
             >
               Inject to Workspace
             </button>
@@ -194,11 +194,11 @@ export const PromptLibrary: React.FC<LibraryProps> = ({ onInject }) => {
         ))}
 
         {filteredTemplates.length === 0 && (
-          <div className="col-span-full py-32 text-center glass rounded-2xl border-dashed border-2 border-gray-200">
-            <p className="text-gray-500 mb-2">No templates match your current filter combination.</p>
+          <div className="col-span-full py-32 text-center glass rounded-2xl border-dashed border-2 border-[#242429]">
+            <p className="text-gray-500 mb-2 font-bold uppercase text-[10px] tracking-widest">No matching templates found</p>
             <button 
               onClick={clearFilters}
-              className="text-indigo-400 text-sm font-semibold hover:underline"
+              className="text-indigo-400 text-sm font-semibold hover:text-indigo-300 underline underline-offset-4"
             >
               Reset all filters
             </button>
