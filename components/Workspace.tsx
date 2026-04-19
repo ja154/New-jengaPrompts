@@ -33,38 +33,34 @@ export const Workspace: React.FC<WorkspaceProps> = ({ onGenerated, initialTempla
   }, [state]);
 
   const updateState = useCallback((updater: (prev: WorkspaceState) => WorkspaceState) => {
-    setState(prev => {
-      const next = updater(prev);
-      
-      const seedChanged = prev.seed !== next.seed;
-      const othersChanged = 
-        prev.modality !== next.modality || 
-        prev.isThinking !== next.isThinking || 
-        JSON.stringify(prev.params) !== JSON.stringify(next.params);
+    const prevState = stateRef.current;
+    const next = updater(prevState);
+    
+    const seedChanged = prevState.seed !== next.seed;
+    const othersChanged = 
+      prevState.modality !== next.modality || 
+      prevState.isThinking !== next.isThinking || 
+      JSON.stringify(prevState.params) !== JSON.stringify(next.params);
 
-      // Side effects should ideally be outside setState, but for atomicity we check here
-      // and we'll use a separate effect or a stable callback to update history.
-      // However, to keep it simple and reactive to the actual state change:
-      if (othersChanged) {
-        setPast(p => [...p, prev].slice(-50));
+    if (othersChanged) {
+      setPast(p => [...p, prevState].slice(-50));
+      setFuture([]);
+      isTypingRef.current = false;
+      if (typingTimerRef.current) clearTimeout(typingTimerRef.current);
+    } else if (seedChanged) {
+      if (!isTypingRef.current) {
+        setPast(p => [...p, prevState].slice(-50));
         setFuture([]);
-        isTypingRef.current = false;
-        if (typingTimerRef.current) clearTimeout(typingTimerRef.current);
-      } else if (seedChanged) {
-        if (!isTypingRef.current) {
-          setPast(p => [...p, prev].slice(-50));
-          setFuture([]);
-          isTypingRef.current = true;
-        }
-        
-        if (typingTimerRef.current) clearTimeout(typingTimerRef.current);
-        typingTimerRef.current = setTimeout(() => {
-          isTypingRef.current = false;
-        }, 1000);
+        isTypingRef.current = true;
       }
       
-      return next;
-    });
+      if (typingTimerRef.current) clearTimeout(typingTimerRef.current);
+      typingTimerRef.current = setTimeout(() => {
+        isTypingRef.current = false;
+      }, 1000);
+    }
+    
+    setState(next);
   }, []);
 
   const handleUndo = useCallback(() => {

@@ -5,7 +5,7 @@ interface SidebarProps {
   isOpen: boolean;
   setOpen: (open: boolean) => void;
   activeTab: 'workspace' | 'library' | 'history' | 'bookmarks';
-  setActiveTab: (tab: any) => void;
+  setActiveTab: (tab: 'workspace' | 'library' | 'history' | 'bookmarks') => void;
   historyCount: number;
   bookmarkCount: number;
 }

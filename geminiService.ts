@@ -13,7 +13,7 @@ const getErrorMessage = (error: any): string => {
   const message = error?.message || "";
   const status = error?.status || 0;
 
-  if (!process.env.API_KEY) {
+  if (!process.env.GEMINI_API_KEY) {
     return "API Key missing. Please ensure the workspace environment is correctly configured.";
   }
 
@@ -40,7 +40,7 @@ export const enhancePrompt = async (
   state: WorkspaceState,
   onChunk: (chunk: string) => void
 ) => {
-  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY || '' });
+  const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || '' });
   
   const systemInstruction = `
     You are a master Prompt Engineer specializing in multi-modal generative AI.
@@ -93,7 +93,7 @@ export const enhancePrompt = async (
 };
 
 export const convertToJSON = async (promptText: string): Promise<string> => {
-  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY || '' });
+  const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || '' });
   
   try {
     const response = await ai.models.generateContent({

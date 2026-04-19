@@ -37,7 +37,7 @@ const App: React.FC = () => {
         newHistory[existingIndex] = prompt;
         return newHistory;
       }
-      return [prompt, ...prev].slice(0, 10);
+      return [prompt, ...prev].slice(0, 50); // Increased from 10 to 50
     });
     setBookmarks(prev => {
       const existingIndex = prev.findIndex(p => p.id === prompt.id);
