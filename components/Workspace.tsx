@@ -14,11 +14,21 @@ interface WorkspaceProps {
 }
 
 export const Workspace: React.FC<WorkspaceProps> = ({ onGenerated, initialTemplate, onClearTemplate, activePrompt, onClearActivePrompt }) => {
-  const [state, setState] = useState<WorkspaceState>({
-    modality: 'text',
-    seed: '',
-    params: {},
-    isThinking: false
+  const [state, setState] = useState<WorkspaceState>(() => {
+    const saved = localStorage.getItem('jp_workspace_state');
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (e) {
+        console.error('Failed to parse saved workspace state', e);
+      }
+    }
+    return {
+      modality: 'text',
+      seed: '',
+      params: {},
+      isThinking: false
+    };
   });
   
   const [past, setPast] = useState<WorkspaceState[]>([]);
@@ -123,12 +133,33 @@ export const Workspace: React.FC<WorkspaceProps> = ({ onGenerated, initialTempla
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [handleUndo, handleRedo]);
 
-  const [output, setOutput] = useState('');
-  const [jsonOutput, setJsonOutput] = useState<string | null>(null);
-  const [viewMode, setViewMode] = useState<'text' | 'json'>('text');
+  const [output, setOutput] = useState(() => localStorage.getItem('jp_workspace_output') || '');
+  const [jsonOutput, setJsonOutput] = useState<string | null>(() => localStorage.getItem('jp_workspace_json_output'));
+  const [viewMode, setViewMode] = useState<'text' | 'json'>(() => (localStorage.getItem('jp_workspace_view_mode') as 'text' | 'json') || 'text');
   const [isGenerating, setIsGenerating] = useState(false);
   const [isConverting, setIsConverting] = useState(false);
   const outputRef = useRef<HTMLDivElement>(null);
+
+  // Auto-save logic
+  useEffect(() => {
+    localStorage.setItem('jp_workspace_state', JSON.stringify(state));
+  }, [state]);
+
+  useEffect(() => {
+    localStorage.setItem('jp_workspace_output', output);
+  }, [output]);
+
+  useEffect(() => {
+    if (jsonOutput) {
+      localStorage.setItem('jp_workspace_json_output', jsonOutput);
+    } else {
+      localStorage.removeItem('jp_workspace_json_output');
+    }
+  }, [jsonOutput]);
+
+  useEffect(() => {
+    localStorage.setItem('jp_workspace_view_mode', viewMode);
+  }, [viewMode]);
 
   useEffect(() => {
     if (initialTemplate) {
