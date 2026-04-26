@@ -43,31 +43,38 @@ export const enhancePrompt = async (
   const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || '' });
   
   const systemInstruction = `
-    You are a master Prompt Engineer specializing in multi-modal generative AI.
-    Your task is to take a "Seed" idea and a set of "Parameters" to build a "Master Prompt".
+    You are an elite, world-class Prompt Engineer and LLM Architect specializing in multi-modal generative AI (Midjourney, Sora, GPT-4, Gemini, Claude, Stable Diffusion, and specialized Audio AI).
+    Your task is to transform a "Seed Idea" and "Technical Parameters" into a comprehensive, high-fidelity "Master Prompt" that maximizes model performance and output quality.
     
-    Guidelines:
-    - For Image/Video: Focus on technical details like lighting, framing, lens types, and specific artistic styles.
-    - For Code: Ensure the context is technical, specifying constraints, libraries, and design patterns.
-    - For Audio: Focus on texture, instrumentation, vibe, and acoustic properties.
-    - For Text: Focus on tone, target audience, and structural requirements.
+    CORE OPERATING PRINCIPLES:
+    - High Information Density: Every word must serve a purpose. Avoid fluff. Use industry-standard terminology.
+    - Contextual Anchoring: Define the atmosphere, lighting, emotional tone, and technical medium explicitly.
+    - Structural Precision: Organize prompts logically (e.g., [Subject], [Style], [Technical Specs], [Negative Constraints] where applicable).
     
-    Output Format:
-    Return ONLY the final optimized prompt. Do not include introductory text or explanations.
-    If the modality is 'image' or 'video', structure it for Midjourney/Sora style syntax.
-    If 'code', provide a clear instruction set.
+    MODALITY-SPECIFIC DEPTH:
+    - IMAGE/VIDEO: Use cinematic terminology (anamorphic, 8k, ray tracing, depth of field). Specify lens (35mm, 85mm), lighting (chiaroscuro, Rembrandt, high-key), and artist/director styles if appropriate. Use Midjourney v6 / Sora syntax: starts with the subject, followed by modifiers, and ending with parameters (e.g., --ar 16:9).
+    - CODE: Focus on modularity, scalability, and security. Specify exact libraries, design patterns (Clean Architecture, SOLID), and performance constraints. Frame it as an instruction set for a Senior Lead Developer.
+    - AUDIO/MUSIC: Define instrumentation, tempo, frequency response, acoustic environment (reverb, dry, studio-grade), and emotional arc. Use texture-based descriptions (grainy, lush, ethereal).
+    - TEXT/WRITING: Use specific linguistic personas. Define the target audience, reading level, and specific rhethorical devices allowed. Implement "Chain of Thought" or "Step-by-Step" framing as a technical parameter if implied.
+    
+    OUTPUT PROTOCOL:
+    - Return ONLY the final optimized Master Prompt.
+    - NO introductory sentences ("Here is your prompt...").
+    - NO trailing explanations.
+    - If the user provides parameters, they MUST be integrated seamlessly into the prompt logic.
   `;
 
   const parametersString = Object.entries(state.params)
-    .map(([k, v]) => `${k}: ${v}`)
-    .join(', ');
+    .map(([k, v]) => `[${k.toUpperCase()}]: ${v}`)
+    .join('\n');
 
   const prompt = `
-    Modality: ${state.modality.toUpperCase()}
-    Seed Idea: ${state.seed}
-    Technical Parameters: ${parametersString}
+    MODALITY: ${state.modality.toUpperCase()}
+    CORE CONCEPT (SEED): ${state.seed}
+    TECHNICAL CONSTRAINTS:
+    ${parametersString}
     
-    Generate an optimized master prompt.
+    Construct the final Master Prompt using elite prompt engineering techniques.
   `;
 
   try {
@@ -98,18 +105,21 @@ export const convertToJSON = async (promptText: string): Promise<string> => {
   try {
     const response = await ai.models.generateContent({
       model: JSON_MODEL_NAME,
-      contents: `Structure the following AI prompt into a well-organized JSON object. Extract logical components such as 'core_objective', 'style_and_format', 'technical_constraints', and 'raw_prompt'. \n\nPrompt: ${promptText}`,
+      contents: `Perform a deep structural analysis of the following AI prompt. Deconstruct it into its semantic components, ensuring the "raw_prompt" perfectly preserves the original generation while other fields provide meta-analysis.
+      
+      Prompt to analyze: ${promptText}`,
       config: {
         responseMimeType: "application/json",
         responseSchema: {
           type: Type.OBJECT,
           properties: {
-            core_objective: { type: Type.STRING },
-            style_and_format: { type: Type.STRING },
-            technical_constraints: { type: Type.ARRAY, items: { type: Type.STRING } },
-            raw_prompt: { type: Type.STRING }
+            core_objective: { type: Type.STRING, description: "The primary purpose or subject of the prompt." },
+            style_and_format: { type: Type.STRING, description: "The aesthetic, tone, or structural format (e.g., Midjourney syntax, Python script)." },
+            technical_constraints: { type: Type.ARRAY, items: { type: Type.STRING }, description: "Specific technical requirements like lighting, resolution, libraries, or architecture." },
+            high_level_analysis: { type: Type.STRING, description: "A one-sentence expert evaluation of why this prompt is effective." },
+            raw_prompt: { type: Type.STRING, description: "The complete, verbatim prompt text." }
           },
-          required: ["core_objective", "style_and_format", "raw_prompt"]
+          required: ["core_objective", "style_and_format", "raw_prompt", "technical_constraints", "high_level_analysis"]
         }
       }
     });
