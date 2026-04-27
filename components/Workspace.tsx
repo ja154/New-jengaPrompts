@@ -43,34 +43,35 @@ export const Workspace: React.FC<WorkspaceProps> = ({ onGenerated, initialTempla
   }, [state]);
 
   const updateState = useCallback((updater: (prev: WorkspaceState) => WorkspaceState) => {
-    const prevState = stateRef.current;
-    const next = updater(prevState);
-    
-    const seedChanged = prevState.seed !== next.seed;
-    const othersChanged = 
-      prevState.modality !== next.modality || 
-      prevState.isThinking !== next.isThinking || 
-      JSON.stringify(prevState.params) !== JSON.stringify(next.params);
+    setState(prev => {
+      const next = updater(prev);
+      
+      const seedChanged = prev.seed !== next.seed;
+      const othersChanged = 
+        prev.modality !== next.modality || 
+        prev.isThinking !== next.isThinking || 
+        JSON.stringify(prev.params) !== JSON.stringify(next.params);
 
-    if (othersChanged) {
-      setPast(p => [...p, prevState].slice(-50));
-      setFuture([]);
-      isTypingRef.current = false;
-      if (typingTimerRef.current) clearTimeout(typingTimerRef.current);
-    } else if (seedChanged) {
-      if (!isTypingRef.current) {
-        setPast(p => [...p, prevState].slice(-50));
+      if (othersChanged) {
+        setPast(p => [...p, prev].slice(-50));
         setFuture([]);
-        isTypingRef.current = true;
+        isTypingRef.current = false;
+        if (typingTimerRef.current) clearTimeout(typingTimerRef.current);
+      } else if (seedChanged) {
+        if (!isTypingRef.current) {
+          setPast(p => [...p, prev].slice(-50));
+          setFuture([]);
+          isTypingRef.current = true;
+        }
+        
+        if (typingTimerRef.current) clearTimeout(typingTimerRef.current);
+        typingTimerRef.current = setTimeout(() => {
+          isTypingRef.current = false;
+        }, 1000);
       }
       
-      if (typingTimerRef.current) clearTimeout(typingTimerRef.current);
-      typingTimerRef.current = setTimeout(() => {
-        isTypingRef.current = false;
-      }, 1000);
-    }
-    
-    setState(next);
+      return next;
+    });
   }, []);
 
   const handleUndo = useCallback(() => {
@@ -79,8 +80,10 @@ export const Workspace: React.FC<WorkspaceProps> = ({ onGenerated, initialTempla
       const newPast = [...currentPast];
       const prevState = newPast.pop()!;
       
-      setFuture(currentFuture => [stateRef.current, ...currentFuture]);
-      setState(prevState);
+      setState(currentState => {
+        setFuture(currentFuture => [currentState, ...currentFuture]);
+        return prevState;
+      });
       
       isTypingRef.current = false;
       if (typingTimerRef.current) clearTimeout(typingTimerRef.current);
@@ -95,8 +98,10 @@ export const Workspace: React.FC<WorkspaceProps> = ({ onGenerated, initialTempla
       const newFuture = [...currentFuture];
       const nextState = newFuture.shift()!;
       
-      setPast(currentPast => [...currentPast, stateRef.current].slice(-50));
-      setState(nextState);
+      setState(currentState => {
+        setPast(currentPast => [...currentPast, currentState].slice(-50));
+        return nextState;
+      });
       
       isTypingRef.current = false;
       if (typingTimerRef.current) clearTimeout(typingTimerRef.current);
@@ -117,9 +122,6 @@ export const Workspace: React.FC<WorkspaceProps> = ({ onGenerated, initialTempla
           e.preventDefault();
           handleRedo();
         } else {
-          // Only prevent default if we're not in an input/textarea 
-          // or if we want to override the browser's native undo
-          // For this app, we want to override it to handle the whole state
           e.preventDefault();
           handleUndo();
         }
@@ -220,7 +222,7 @@ export const Workspace: React.FC<WorkspaceProps> = ({ onGenerated, initialTempla
     setIsGenerating(false);
     
     const newVersion = {
-      id: Math.random().toString(36).substr(2, 9),
+      id: crypto.randomUUID(),
       timestamp: Date.now(),
       originalSeed: state.seed,
       enhancedPrompt: fullOutput,
@@ -240,7 +242,7 @@ export const Workspace: React.FC<WorkspaceProps> = ({ onGenerated, initialTempla
       onGenerated(updatedPrompt);
     } else {
       onGenerated({
-        id: Math.random().toString(36).substr(2, 9),
+        id: crypto.randomUUID(),
         timestamp: newVersion.timestamp,
         originalSeed: newVersion.originalSeed,
         enhancedPrompt: newVersion.enhancedPrompt,

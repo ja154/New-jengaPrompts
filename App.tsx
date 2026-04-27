@@ -19,8 +19,20 @@ const App: React.FC = () => {
   useEffect(() => {
     const savedHistory = localStorage.getItem('jp_history');
     const savedBookmarks = localStorage.getItem('jp_bookmarks');
-    if (savedHistory) setHistory(JSON.parse(savedHistory));
-    if (savedBookmarks) setBookmarks(JSON.parse(savedBookmarks));
+    if (savedHistory) {
+      try {
+        setHistory(JSON.parse(savedHistory));
+      } catch (e) {
+        console.error('Failed to parse history', e);
+      }
+    }
+    if (savedBookmarks) {
+      try {
+        setBookmarks(JSON.parse(savedBookmarks));
+      } catch (e) {
+        console.error('Failed to parse bookmarks', e);
+      }
+    }
   }, []);
 
   // Save persistence
