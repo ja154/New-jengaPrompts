@@ -27,7 +27,7 @@ export const Workspace: React.FC<WorkspaceProps> = ({ onGenerated, initialTempla
       modality: 'text',
       seed: '',
       params: {},
-      isThinking: false
+      isThinking: true
     };
   });
   
@@ -169,7 +169,7 @@ export const Workspace: React.FC<WorkspaceProps> = ({ onGenerated, initialTempla
         modality: initialTemplate.modality,
         seed: initialTemplate.seed,
         params: initialTemplate.parameters,
-        isThinking: false
+        isThinking: true
       }));
       setOutput('');
       setJsonOutput(null);
@@ -184,7 +184,7 @@ export const Workspace: React.FC<WorkspaceProps> = ({ onGenerated, initialTempla
         modality: activePrompt.modality,
         seed: activePrompt.originalSeed,
         params: activePrompt.params || {},
-        isThinking: false
+        isThinking: true
       }));
       setOutput(activePrompt.enhancedPrompt);
       setJsonOutput(null);
