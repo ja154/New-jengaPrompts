@@ -21,14 +21,16 @@ const App: React.FC = () => {
     const savedBookmarks = localStorage.getItem('jp_bookmarks');
     if (savedHistory) {
       try {
-        setHistory(JSON.parse(savedHistory));
+        const parsed = JSON.parse(savedHistory);
+        setHistory(Array.isArray(parsed) ? parsed : []);
       } catch (e) {
         console.error('Failed to parse history', e);
       }
     }
     if (savedBookmarks) {
       try {
-        setBookmarks(JSON.parse(savedBookmarks));
+        const parsed = JSON.parse(savedBookmarks);
+        setBookmarks(Array.isArray(parsed) ? parsed : []);
       } catch (e) {
         console.error('Failed to parse bookmarks', e);
       }

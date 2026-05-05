@@ -18,7 +18,13 @@ export const Workspace: React.FC<WorkspaceProps> = ({ onGenerated, initialTempla
     const saved = localStorage.getItem('jp_workspace_state');
     if (saved) {
       try {
-        return JSON.parse(saved);
+        const parsed = JSON.parse(saved) || {};
+        return {
+          modality: parsed.modality || 'text',
+          seed: parsed.seed || '',
+          params: parsed.params || {},
+          isThinking: parsed.isThinking ?? true
+        };
       } catch (e) {
         console.error('Failed to parse saved workspace state', e);
       }
@@ -222,7 +228,7 @@ export const Workspace: React.FC<WorkspaceProps> = ({ onGenerated, initialTempla
     setIsGenerating(false);
     
     const newVersion = {
-      id: crypto.randomUUID(),
+      id: typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).substring(2, 10),
       timestamp: Date.now(),
       originalSeed: state.seed,
       enhancedPrompt: fullOutput,
@@ -242,7 +248,7 @@ export const Workspace: React.FC<WorkspaceProps> = ({ onGenerated, initialTempla
       onGenerated(updatedPrompt);
     } else {
       onGenerated({
-        id: crypto.randomUUID(),
+        id: typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).substring(2, 10),
         timestamp: newVersion.timestamp,
         originalSeed: newVersion.originalSeed,
         enhancedPrompt: newVersion.enhancedPrompt,
