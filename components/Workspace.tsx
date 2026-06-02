@@ -282,7 +282,7 @@ export const Workspace: React.FC<WorkspaceProps> = ({ onGenerated, initialTempla
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <section className="space-y-4">
-        <h2 className="text-[10px] font-bold uppercase tracking-[0.2em] text-indigo-400 ml-1">01. Select Modality</h2>
+        <h2 className="text-sm font-medium text-zinc-300 ml-1 mb-2">Modality</h2>
         <div className="grid grid-cols-3 md:grid-cols-5 gap-3">
           {MODALITIES.map((m) => (
             <button
@@ -291,12 +291,12 @@ export const Workspace: React.FC<WorkspaceProps> = ({ onGenerated, initialTempla
               className={`
                 flex flex-col items-center justify-center p-4 rounded-xl transition-all border
                 ${state.modality === m.value 
-                  ? 'bg-indigo-500/10 border-indigo-500/40 text-indigo-300 shadow-[0_0_20px_rgba(99,102,241,0.1)]' 
-                  : 'bg-[#121215] border-[#242429] text-gray-500 hover:bg-[#1a1a1e] hover:border-gray-700'}
+                  ? 'bg-zinc-800 border-zinc-700 text-zinc-100' 
+                  : 'bg-[#18181b] border-transparent text-zinc-500 hover:bg-[#27272a] hover:text-zinc-300'}
               `}
             >
               <span className={`text-2xl mb-2 transition-transform ${state.modality === m.value ? 'scale-110' : 'grayscale opacity-50'}`}>{m.icon}</span>
-              <span className="text-[10px] font-bold uppercase tracking-wider">{m.label}</span>
+              <span className="text-xs font-semibold">{m.label}</span>
             </button>
           ))}
         </div>
@@ -307,13 +307,13 @@ export const Workspace: React.FC<WorkspaceProps> = ({ onGenerated, initialTempla
         <section className="space-y-6">
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <h2 className="text-[10px] font-bold uppercase tracking-[0.2em] text-indigo-400 ml-1">02. Define Seed Idea</h2>
-              <div className="flex items-center gap-1 bg-[#121215] p-1 rounded-xl border border-[#242429]">
+              <h2 className="text-sm font-medium text-zinc-300 ml-1">Prompt Idea</h2>
+              <div className="flex items-center gap-1 bg-zinc-900/50 p-1 rounded-xl border border-zinc-800">
                 <button
                   onClick={handleUndo}
                   disabled={past.length === 0}
                   title="Undo (Ctrl+Z)"
-                  className={`p-1.5 rounded-lg transition-all ${past.length === 0 ? 'text-gray-700 cursor-not-allowed' : 'text-indigo-400 hover:bg-[#1a1a1e] active:scale-95'}`}
+                  className={`p-1.5 rounded-lg transition-all ${past.length === 0 ? 'text-zinc-700 cursor-not-allowed' : 'text-zinc-400 hover:bg-zinc-800 active:scale-95'}`}
                 >
                   <Undo2 size={14} />
                 </button>
@@ -321,16 +321,16 @@ export const Workspace: React.FC<WorkspaceProps> = ({ onGenerated, initialTempla
                   onClick={handleRedo}
                   disabled={future.length === 0}
                   title="Redo (Ctrl+Y)"
-                  className={`p-1.5 rounded-lg transition-all ${future.length === 0 ? 'text-gray-700 cursor-not-allowed' : 'text-indigo-400 hover:bg-[#1a1a1e] active:scale-95'}`}
+                  className={`p-1.5 rounded-lg transition-all ${future.length === 0 ? 'text-zinc-700 cursor-not-allowed' : 'text-zinc-400 hover:bg-zinc-800 active:scale-95'}`}
                 >
                   <Redo2 size={14} />
                 </button>
-                <div className="w-px h-4 bg-[#242429] mx-1" />
+                <div className="w-px h-4 bg-zinc-800 mx-1" />
                 <button
                   onClick={() => updateState(prev => ({ ...prev, seed: '' }))}
                   disabled={!state.seed}
                   title="Clear Seed"
-                  className={`p-1.5 rounded-lg transition-all ${!state.seed ? 'text-gray-700 cursor-not-allowed' : 'text-gray-500 hover:text-red-400 hover:bg-[#1a1a1e] active:scale-95'}`}
+                  className={`p-1.5 rounded-lg transition-all ${!state.seed ? 'text-zinc-700 cursor-not-allowed' : 'text-zinc-500 hover:text-rose-400 hover:bg-zinc-800 active:scale-95'}`}
                 >
                   <RotateCcw size={14} />
                 </button>
@@ -339,34 +339,34 @@ export const Workspace: React.FC<WorkspaceProps> = ({ onGenerated, initialTempla
             <textarea
               value={state.seed}
               onChange={(e) => updateState(prev => ({ ...prev, seed: e.target.value }))}
-              placeholder="Describe your core concept in plain English..."
-              className="w-full h-40 glass rounded-2xl p-6 text-lg focus:ring-1 focus:ring-indigo-500/50 outline-none transition-all resize-none border-[#242429] text-gray-100 bg-[#0a0a0c]/50 placeholder:text-gray-700"
+              placeholder="Describe what you want the AI to do..."
+              className="w-full h-40 glass p-4 text-base focus:ring-1 focus:ring-zinc-600 outline-none transition-all resize-none text-zinc-100 bg-[#09090b]/50 placeholder:text-zinc-600"
             />
           </div>
 
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <h2 className="text-[10px] font-bold uppercase tracking-[0.2em] text-indigo-400 ml-1">03. Technical Parameters</h2>
+              <h2 className="text-sm font-medium text-zinc-300 ml-1">Properties</h2>
               <button 
                 onClick={() => updateState(prev => ({ ...prev, params: {} }))}
-                className="text-[9px] font-bold text-gray-600 hover:text-gray-400 uppercase tracking-widest"
+                className="text-[10px] font-semibold text-zinc-500 hover:text-zinc-300 uppercase tracking-wider"
               >
-                Reset
+                Clear
               </button>
             </div>
             
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {MODALITY_SPECIFIC_CONTROLS[state.modality].map((control) => (
                 <div key={control.name} className="space-y-1.5">
-                  <label className="text-[9px] font-bold text-gray-600 uppercase ml-1 tracking-widest">{control.name}</label>
+                  <label className="text-xs font-medium text-zinc-400 ml-1 capitalize">{control.name}</label>
                   <select
                     value={state.params[control.name] || ''}
                     onChange={(e) => handleParamChange(control.name, e.target.value)}
-                    className="w-full bg-[#121215] border border-[#242429] rounded-xl px-4 py-3 text-sm focus:border-indigo-500/50 outline-none transition-colors text-gray-300 appearance-none cursor-pointer hover:border-gray-700"
+                    className="w-full bg-[#18181b] border border-zinc-800 rounded-xl px-4 py-3 text-sm focus:border-zinc-500 outline-none transition-colors text-zinc-300 appearance-none cursor-pointer hover:border-zinc-700"
                   >
-                    <option value="" disabled className="bg-[#121215]">Select {control.name}...</option>
+                    <option value="" disabled className="bg-[#18181b]">Select {control.name}...</option>
                     {control.options.map(opt => (
-                      <option key={opt} value={opt} className="bg-[#121215]">{opt}</option>
+                      <option key={opt} value={opt} className="bg-[#18181b]">{opt}</option>
                     ))}
                   </select>
                 </div>
@@ -379,29 +379,29 @@ export const Workspace: React.FC<WorkspaceProps> = ({ onGenerated, initialTempla
               onClick={handleGenerate}
               disabled={isGenerating || !state.seed.trim()}
               className={`
-                flex-1 w-full py-4 rounded-xl font-bold text-sm uppercase tracking-[0.2em] transition-all
+                flex-1 w-full py-3.5 rounded-xl font-medium text-sm transition-all
                 ${isGenerating || !state.seed.trim()
-                  ? 'bg-[#1a1a1e] text-gray-700 border border-[#242429] cursor-not-allowed'
-                  : 'bg-indigo-600 hover:bg-indigo-500 text-white shadow-[0_0_20px_rgba(99,102,241,0.3)] active:scale-[0.98]'}
+                  ? 'bg-[#27272a] text-zinc-500 cursor-not-allowed'
+                  : 'bg-zinc-100 hover:bg-white text-zinc-900 active:scale-[0.98] shadow-sm'}
               `}
             >
               {isGenerating ? (
                 <div className="flex items-center justify-center gap-3">
-                  <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
-                  Processing...
+                  <div className="w-4 h-4 border-2 border-zinc-500/20 border-t-zinc-900 rounded-full animate-spin"></div>
+                  Generating...
                 </div>
               ) : (
-                'Generate Master Prompt'
+                'Generate Prompt'
               )}
             </button>
             
-            <div className="flex items-center gap-3 px-4 py-3 glass rounded-xl border-[#242429] bg-[#121215]">
-              <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Deep Reasoning</label>
+            <div className="flex items-center gap-3 px-4 py-3 glass rounded-xl">
+              <label className="text-xs font-medium text-zinc-400">Deep Reasoning</label>
               <button
                 onClick={() => updateState(prev => ({ ...prev, isThinking: !prev.isThinking }))}
-                className={`w-10 h-5 rounded-full p-1 transition-colors ${state.isThinking ? 'bg-indigo-600' : 'bg-[#242429]'}`}
+                className={`w-10 h-5 rounded-full p-1 transition-colors ${state.isThinking ? 'bg-zinc-100' : 'bg-zinc-800'}`}
               >
-                <div className={`w-3 h-3 bg-white rounded-full shadow transition-transform ${state.isThinking ? 'translate-x-5' : 'translate-x-0'}`}></div>
+                <div className={`w-3 h-3 rounded-full shadow transition-transform ${state.isThinking ? 'bg-zinc-900 translate-x-5' : 'bg-zinc-500 translate-x-0'}`}></div>
               </button>
             </div>
           </div>
@@ -411,21 +411,21 @@ export const Workspace: React.FC<WorkspaceProps> = ({ onGenerated, initialTempla
         <section className="space-y-4 flex flex-col h-full">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <h2 className="text-[10px] font-bold uppercase tracking-[0.2em] text-indigo-400 ml-1">04. Final Output</h2>
+              <h2 className="text-sm font-medium text-zinc-300 ml-1">Output</h2>
               {output && !isGenerating && (
-                <div className="flex bg-[#121215] rounded-lg p-0.5 border border-[#242429]">
+                <div className="flex bg-zinc-900 rounded-lg p-0.5 border border-zinc-800">
                   <button 
                     onClick={() => setViewMode('text')}
-                    className={`px-3 py-1 text-[9px] font-bold rounded-md transition-all ${viewMode === 'text' ? 'bg-[#242429] text-white shadow-sm' : 'text-gray-600 hover:text-gray-400'}`}
+                    className={`px-3 py-1 text-xs font-medium rounded-md transition-all ${viewMode === 'text' ? 'bg-zinc-800 text-zinc-100 shadow-sm' : 'text-zinc-500 hover:text-zinc-300'}`}
                   >
-                    TEXT
+                    Text
                   </button>
                   <button 
                     onClick={handleConvertToJson}
                     disabled={isConverting}
-                    className={`px-3 py-1 text-[9px] font-bold rounded-md transition-all flex items-center gap-1 ${viewMode === 'json' ? 'bg-[#242429] text-white shadow-sm' : 'text-gray-600 hover:text-gray-400'}`}
+                    className={`px-3 py-1 text-xs font-medium rounded-md transition-all flex items-center gap-1 ${viewMode === 'json' ? 'bg-zinc-800 text-zinc-100 shadow-sm' : 'text-zinc-500 hover:text-zinc-300'}`}
                   >
-                    {isConverting && <div className="w-2 h-2 border-t-2 border-white rounded-full animate-spin"></div>}
+                    {isConverting && <div className="w-2 h-2 border-t-2 border-zinc-100 rounded-full animate-spin"></div>}
                     JSON
                   </button>
                 </div>
@@ -434,38 +434,38 @@ export const Workspace: React.FC<WorkspaceProps> = ({ onGenerated, initialTempla
             {output && (
               <button 
                 onClick={handleCopy}
-                className="text-[9px] text-indigo-400 hover:text-indigo-300 font-bold uppercase tracking-widest"
+                className="text-xs text-zinc-400 hover:text-zinc-200 font-medium"
               >
-                Copy {viewMode.toUpperCase()}
+                Copy {viewMode.charAt(0).toUpperCase() + viewMode.slice(1)}
               </button>
             )}
           </div>
           
           <div 
             ref={outputRef}
-            className="flex-1 min-h-[400px] glass rounded-2xl p-8 mono text-sm leading-relaxed border-[#242429] overflow-y-auto relative group text-gray-300 bg-[#0a0a0c]/50"
+            className="flex-1 min-h-[400px] glass p-6 mono text-sm leading-relaxed overflow-y-auto relative group text-zinc-300 bg-[#09090b]/50"
           >
             {!output && !isGenerating ? (
-              <div className="h-full flex flex-col items-center justify-center text-gray-700 space-y-6">
+              <div className="h-full flex flex-col items-center justify-center text-zinc-600 space-y-4">
                 <div className="grid grid-cols-2 gap-3 opacity-20">
-                  <div className="w-12 h-1 bg-indigo-500 rounded-full"></div>
-                  <div className="w-8 h-1 bg-indigo-500 rounded-full"></div>
-                  <div className="w-16 h-1 bg-indigo-500 rounded-full"></div>
-                  <div className="w-10 h-1 bg-indigo-500 rounded-full"></div>
+                  <div className="w-12 h-1 bg-zinc-500 rounded-full"></div>
+                  <div className="w-8 h-1 bg-zinc-500 rounded-full"></div>
+                  <div className="w-16 h-1 bg-zinc-500 rounded-full"></div>
+                  <div className="w-10 h-1 bg-zinc-500 rounded-full"></div>
                 </div>
-                <p className="text-center max-w-[240px] text-[11px] uppercase tracking-[0.2em] font-medium leading-loose">Initialize prompt construction to view output</p>
+                <p className="text-center max-w-[240px] text-xs font-medium">Ready for generation</p>
               </div>
             ) : (
               <div className="whitespace-pre-wrap animate-in fade-in duration-1000">
                 {viewMode === 'text' ? output : (jsonOutput || 'Structuring...')}
-                {isGenerating && viewMode === 'text' && <span className="inline-block w-2 h-5 bg-indigo-500 ml-1 animate-pulse align-middle"></span>}
+                {isGenerating && viewMode === 'text' && <span className="inline-block w-2 h-5 bg-zinc-400 ml-1 animate-pulse align-middle"></span>}
               </div>
             )}
             
             {output && (
               <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                 <div className="bg-[#1a1a1e] text-indigo-400 text-[9px] font-bold px-2 py-1 rounded border border-indigo-500/30 backdrop-blur-sm uppercase tracking-widest">
-                   {viewMode === 'text' ? 'Master Prompt' : 'Structured JSON'}
+                 <div className="bg-zinc-800/80 text-zinc-400 text-[10px] font-medium px-2 py-1 rounded border border-zinc-700 backdrop-blur-sm">
+                   {viewMode === 'text' ? 'Ready' : 'Structured'}
                  </div>
               </div>
             )}

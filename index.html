@@ -11,14 +11,14 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
       :root {
-        --bg: #0a0a0c;
-        --surface: #121215;
-        --surface-accent: #1a1a1e;
-        --border: #242429;
-        --text-primary: #f8f9fa;
+        --bg: #09090b;
+        --surface: #18181b;
+        --surface-accent: #27272a;
+        --border: #27272a;
+        --text-primary: #fafafa;
         --text-secondary: #a1a1aa;
-        --accent: #6366f1;
-        --accent-glow: rgba(99, 102, 241, 0.15);
+        --accent: #d4d4d8;
+        --accent-glow: rgba(255, 255, 255, 0.05);
       }
       body {
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -32,15 +32,14 @@
       }
       .glass {
         background: var(--surface);
-        border-radius: 16px;
-        box-shadow: 0 4px 24px rgba(0,0,0,0.4);
         border: 1px solid var(--border);
+        border-radius: 12px;
       }
       .mesh-gradient {
         background-color: var(--bg);
         background-image: 
-          radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.05) 0px, transparent 50%),
-          radial-gradient(at 100% 100%, rgba(139, 92, 246, 0.05) 0px, transparent 50%);
+          radial-gradient(at 50% 0%, rgba(255, 255, 255, 0.03) 0px, transparent 50%),
+          radial-gradient(at 100% 100%, rgba(255, 255, 255, 0.02) 0px, transparent 50%);
       }
       ::-webkit-scrollbar {
         width: 8px;
@@ -49,24 +48,15 @@
         background: var(--bg);
       }
       ::-webkit-scrollbar-thumb {
-        background: var(--border);
+        background: var(--surface-accent);
         border-radius: 10px;
       }
       ::-webkit-scrollbar-thumb:hover {
-        background: var(--surface-accent);
+        background: var(--text-secondary);
       }
-      @keyframes pulse-glow {
-        0% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.4); }
-        70% { box-shadow: 0 0 0 10px rgba(99, 102, 241, 0); }
-        100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0); }
-      }
-      .glow-active {
-        animation: pulse-glow 2s infinite;
-      }
-      /* Visible grid pattern */
+      /* Remove grid pattern to keep UI clean and simple */
       .grid-pattern {
-        background-image: radial-gradient(var(--border) 1px, transparent 1px);
-        background-size: 24px 24px;
+        background: var(--bg);
       }
       .no-scrollbar::-webkit-scrollbar {
         display: none;
