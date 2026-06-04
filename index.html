@@ -6,11 +6,39 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>JengaPrompts Pro | Prompt Engineering Workspace</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+      }
+    </script>
+    <script>
+      (function() {
+        try {
+          var localTheme = localStorage.getItem('theme');
+          var systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          if (localTheme === 'dark' || (!localTheme && systemDark)) {
+            document.documentElement.classList.add('dark');
+          } else {
+            document.documentElement.classList.remove('dark');
+          }
+        } catch (e) {}
+      })();
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
       :root {
+        --bg: #f4f4f5;
+        --surface: #ffffff;
+        --surface-accent: #e4e4e7;
+        --border: #e4e4e7;
+        --text-primary: #09090b;
+        --text-secondary: #52525b;
+        --accent: #27272a;
+        --accent-glow: rgba(0, 0, 0, 0.05);
+      }
+      .dark {
         --bg: #09090b;
         --surface: #18181b;
         --surface-accent: #27272a;
@@ -38,8 +66,8 @@
       .mesh-gradient {
         background-color: var(--bg);
         background-image: 
-          radial-gradient(at 50% 0%, rgba(255, 255, 255, 0.03) 0px, transparent 50%),
-          radial-gradient(at 100% 100%, rgba(255, 255, 255, 0.02) 0px, transparent 50%);
+          radial-gradient(at 50% 0%, var(--accent-glow) 0px, transparent 50%),
+          radial-gradient(at 100% 100%, var(--accent-glow) 0px, transparent 50%);
       }
       ::-webkit-scrollbar {
         width: 8px;

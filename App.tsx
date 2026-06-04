@@ -82,7 +82,7 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="flex h-screen overflow-hidden text-gray-100 selection:bg-gray-700 selection:text-white bg-[#09090b]">
+    <div className="flex h-screen overflow-hidden text-zinc-900 dark:text-zinc-100 selection:bg-zinc-200 dark:selection:bg-zinc-800 selection:text-zinc-900 dark:selection:text-zinc-50 bg-white dark:bg-zinc-950">
       <Sidebar 
         isOpen={isSidebarOpen} 
         setOpen={setSidebarOpen}
@@ -113,13 +113,13 @@ const App: React.FC = () => {
             
             {(activeTab === 'history' || activeTab === 'bookmarks') && (
               <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                <div className="flex items-center justify-between border-b border-zinc-800 pb-6">
+                <div className="flex items-center justify-between border-b border-zinc-200 dark:border-zinc-800 pb-6">
                   <div>
-                    <h2 className="text-2xl font-semibold capitalize tracking-tight text-zinc-100">{activeTab}</h2>
-                    <p className="text-xs text-zinc-500 font-medium mt-1">Stored Prompt Archive</p>
+                    <h2 className="text-2xl font-semibold capitalize tracking-tight text-zinc-900 dark:text-zinc-100">{activeTab}</h2>
+                    <p className="text-xs text-zinc-600 dark:text-zinc-400 font-medium mt-1">Stored Prompt Archive</p>
                   </div>
                   <div className="flex items-center gap-3">
-                    <span className="px-3 py-1 rounded-full bg-zinc-800 border border-zinc-700 text-xs font-medium text-zinc-400 capitalize">
+                    <span className="px-3 py-1 rounded-full bg-zinc-200 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 text-xs font-medium text-zinc-600 dark:text-zinc-400 capitalize">
                       {activeTab === 'history' ? history.length : bookmarks.length} Records
                     </span>
                   </div>
@@ -137,16 +137,16 @@ const App: React.FC = () => {
                     />
                   ))}
                   {(activeTab === 'history' ? history : bookmarks).length === 0 && (
-                    <div className="py-24 text-center glass border-dashed border-2 border-zinc-800">
-                      <div className="w-16 h-16 bg-zinc-800 rounded-full flex items-center justify-center mx-auto mb-6 border border-zinc-700">
-                        <svg className="w-8 h-8 text-zinc-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div className="py-24 text-center glass border-dashed border-2 border-zinc-200 dark:border-zinc-800">
+                      <div className="w-16 h-16 bg-zinc-200 dark:bg-zinc-800 rounded-full flex items-center justify-center mx-auto mb-6 border border-zinc-300 dark:border-zinc-700">
+                        <svg className="w-8 h-8 text-zinc-600 dark:text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5S19.832 5.477 21 6.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                         </svg>
                       </div>
-                      <p className="text-zinc-500 font-medium text-sm mb-4">No prompts found in your {activeTab}</p>
+                      <p className="text-zinc-600 dark:text-zinc-400 font-medium text-sm mb-4">No prompts found in your {activeTab}</p>
                       <button 
                         onClick={() => setActiveTab('workspace')}
-                        className="text-zinc-300 font-medium text-sm hover:text-white transition-colors underline underline-offset-4 decoration-zinc-700"
+                        className="text-zinc-800 dark:text-zinc-300 font-medium text-sm hover:text-white transition-colors underline underline-offset-4 decoration-zinc-700"
                       >
                         Initialize Workspace
                       </button>

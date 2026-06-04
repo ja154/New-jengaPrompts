@@ -282,7 +282,7 @@ export const Workspace: React.FC<WorkspaceProps> = ({ onGenerated, initialTempla
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <section className="space-y-4">
-        <h2 className="text-sm font-medium text-zinc-300 ml-1 mb-2">Modality</h2>
+        <h2 className="text-sm font-medium text-zinc-800 dark:text-zinc-300 ml-1 mb-2">Modality</h2>
         <div className="grid grid-cols-3 md:grid-cols-5 gap-3">
           {MODALITIES.map((m) => (
             <button
@@ -291,8 +291,8 @@ export const Workspace: React.FC<WorkspaceProps> = ({ onGenerated, initialTempla
               className={`
                 flex flex-col items-center justify-center p-4 rounded-xl transition-all border
                 ${state.modality === m.value 
-                  ? 'bg-zinc-800 border-zinc-700 text-zinc-100' 
-                  : 'bg-[#18181b] border-transparent text-zinc-500 hover:bg-[#27272a] hover:text-zinc-300'}
+                  ? 'bg-zinc-200 dark:bg-zinc-800 border-zinc-300 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100' 
+                  : 'bg-zinc-50 dark:bg-zinc-900 border-transparent text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:bg-zinc-800 hover:text-zinc-800 dark:text-zinc-300'}
               `}
             >
               <span className={`text-2xl mb-2 transition-transform ${state.modality === m.value ? 'scale-110' : 'grayscale opacity-50'}`}>{m.icon}</span>
@@ -307,13 +307,13 @@ export const Workspace: React.FC<WorkspaceProps> = ({ onGenerated, initialTempla
         <section className="space-y-6">
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <h2 className="text-sm font-medium text-zinc-300 ml-1">Prompt Idea</h2>
-              <div className="flex items-center gap-1 bg-zinc-900/50 p-1 rounded-xl border border-zinc-800">
+              <h2 className="text-sm font-medium text-zinc-800 dark:text-zinc-300 ml-1">Prompt Idea</h2>
+              <div className="flex items-center gap-1 bg-zinc-100 dark:bg-zinc-800/50 p-1 rounded-xl border border-zinc-200 dark:border-zinc-800">
                 <button
                   onClick={handleUndo}
                   disabled={past.length === 0}
                   title="Undo (Ctrl+Z)"
-                  className={`p-1.5 rounded-lg transition-all ${past.length === 0 ? 'text-zinc-700 cursor-not-allowed' : 'text-zinc-400 hover:bg-zinc-800 active:scale-95'}`}
+                  className={`p-1.5 rounded-lg transition-all ${past.length === 0 ? 'text-zinc-700 cursor-not-allowed' : 'text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200 dark:bg-zinc-800 active:scale-95'}`}
                 >
                   <Undo2 size={14} />
                 </button>
@@ -321,16 +321,16 @@ export const Workspace: React.FC<WorkspaceProps> = ({ onGenerated, initialTempla
                   onClick={handleRedo}
                   disabled={future.length === 0}
                   title="Redo (Ctrl+Y)"
-                  className={`p-1.5 rounded-lg transition-all ${future.length === 0 ? 'text-zinc-700 cursor-not-allowed' : 'text-zinc-400 hover:bg-zinc-800 active:scale-95'}`}
+                  className={`p-1.5 rounded-lg transition-all ${future.length === 0 ? 'text-zinc-700 cursor-not-allowed' : 'text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200 dark:bg-zinc-800 active:scale-95'}`}
                 >
                   <Redo2 size={14} />
                 </button>
-                <div className="w-px h-4 bg-zinc-800 mx-1" />
+                <div className="w-px h-4 bg-zinc-200 dark:bg-zinc-800 mx-1" />
                 <button
                   onClick={() => updateState(prev => ({ ...prev, seed: '' }))}
                   disabled={!state.seed}
                   title="Clear Seed"
-                  className={`p-1.5 rounded-lg transition-all ${!state.seed ? 'text-zinc-700 cursor-not-allowed' : 'text-zinc-500 hover:text-rose-400 hover:bg-zinc-800 active:scale-95'}`}
+                  className={`p-1.5 rounded-lg transition-all ${!state.seed ? 'text-zinc-700 cursor-not-allowed' : 'text-zinc-600 dark:text-zinc-400 hover:text-rose-400 hover:bg-zinc-200 dark:bg-zinc-800 active:scale-95'}`}
                 >
                   <RotateCcw size={14} />
                 </button>
@@ -340,16 +340,16 @@ export const Workspace: React.FC<WorkspaceProps> = ({ onGenerated, initialTempla
               value={state.seed}
               onChange={(e) => updateState(prev => ({ ...prev, seed: e.target.value }))}
               placeholder="Describe what you want the AI to do..."
-              className="w-full h-40 glass p-4 text-base focus:ring-1 focus:ring-zinc-600 outline-none transition-all resize-none text-zinc-100 bg-[#09090b]/50 placeholder:text-zinc-600"
+              className="w-full h-40 glass p-4 text-base focus:ring-1 focus:ring-zinc-600 outline-none transition-all resize-none text-zinc-900 dark:text-zinc-100 bg-zinc-50/50 dark:bg-zinc-950/50 placeholder:text-zinc-600"
             />
           </div>
 
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <h2 className="text-sm font-medium text-zinc-300 ml-1">Properties</h2>
+              <h2 className="text-sm font-medium text-zinc-800 dark:text-zinc-300 ml-1">Properties</h2>
               <button 
                 onClick={() => updateState(prev => ({ ...prev, params: {} }))}
-                className="text-[10px] font-semibold text-zinc-500 hover:text-zinc-300 uppercase tracking-wider"
+                className="text-[10px] font-semibold text-zinc-600 dark:text-zinc-400 hover:text-zinc-800 dark:text-zinc-300 uppercase tracking-wider"
               >
                 Clear
               </button>
@@ -358,15 +358,15 @@ export const Workspace: React.FC<WorkspaceProps> = ({ onGenerated, initialTempla
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {MODALITY_SPECIFIC_CONTROLS[state.modality].map((control) => (
                 <div key={control.name} className="space-y-1.5">
-                  <label className="text-xs font-medium text-zinc-400 ml-1 capitalize">{control.name}</label>
+                  <label className="text-xs font-medium text-zinc-600 dark:text-zinc-400 ml-1 capitalize">{control.name}</label>
                   <select
                     value={state.params[control.name] || ''}
                     onChange={(e) => handleParamChange(control.name, e.target.value)}
-                    className="w-full bg-[#18181b] border border-zinc-800 rounded-xl px-4 py-3 text-sm focus:border-zinc-500 outline-none transition-colors text-zinc-300 appearance-none cursor-pointer hover:border-zinc-700"
+                    className="w-full bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-3 text-sm focus:border-zinc-500 outline-none transition-colors text-zinc-800 dark:text-zinc-300 appearance-none cursor-pointer hover:border-zinc-300 dark:border-zinc-700"
                   >
-                    <option value="" disabled className="bg-[#18181b]">Select {control.name}...</option>
+                    <option value="" disabled className="bg-zinc-50 dark:bg-zinc-900">Select {control.name}...</option>
                     {control.options.map(opt => (
-                      <option key={opt} value={opt} className="bg-[#18181b]">{opt}</option>
+                      <option key={opt} value={opt} className="bg-zinc-50 dark:bg-zinc-900">{opt}</option>
                     ))}
                   </select>
                 </div>
@@ -381,8 +381,8 @@ export const Workspace: React.FC<WorkspaceProps> = ({ onGenerated, initialTempla
               className={`
                 flex-1 w-full py-3.5 rounded-xl font-medium text-sm transition-all
                 ${isGenerating || !state.seed.trim()
-                  ? 'bg-[#27272a] text-zinc-500 cursor-not-allowed'
-                  : 'bg-zinc-100 hover:bg-white text-zinc-900 active:scale-[0.98] shadow-sm'}
+                  ? 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 cursor-not-allowed'
+                  : 'bg-zinc-800 dark:bg-zinc-100 hover:bg-zinc-900 dark:hover:bg-white text-zinc-100 dark:text-zinc-900 active:scale-[0.98] shadow-sm'}
               `}
             >
               {isGenerating ? (
@@ -396,12 +396,12 @@ export const Workspace: React.FC<WorkspaceProps> = ({ onGenerated, initialTempla
             </button>
             
             <div className="flex items-center gap-3 px-4 py-3 glass rounded-xl">
-              <label className="text-xs font-medium text-zinc-400">Deep Reasoning</label>
+              <label className="text-xs font-medium text-zinc-600 dark:text-zinc-400">Deep Reasoning</label>
               <button
                 onClick={() => updateState(prev => ({ ...prev, isThinking: !prev.isThinking }))}
-                className={`w-10 h-5 rounded-full p-1 transition-colors ${state.isThinking ? 'bg-zinc-100' : 'bg-zinc-800'}`}
+                className={`w-10 h-5 rounded-full p-1 transition-colors ${state.isThinking ? 'bg-zinc-800 dark:bg-zinc-100' : 'bg-zinc-200 dark:bg-zinc-800'}`}
               >
-                <div className={`w-3 h-3 rounded-full shadow transition-transform ${state.isThinking ? 'bg-zinc-900 translate-x-5' : 'bg-zinc-500 translate-x-0'}`}></div>
+                <div className={`w-3 h-3 rounded-full shadow transition-transform ${state.isThinking ? 'bg-zinc-100 dark:bg-zinc-800 translate-x-5' : 'bg-zinc-500 translate-x-0'}`}></div>
               </button>
             </div>
           </div>
@@ -411,19 +411,19 @@ export const Workspace: React.FC<WorkspaceProps> = ({ onGenerated, initialTempla
         <section className="space-y-4 flex flex-col h-full">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <h2 className="text-sm font-medium text-zinc-300 ml-1">Output</h2>
+              <h2 className="text-sm font-medium text-zinc-800 dark:text-zinc-300 ml-1">Output</h2>
               {output && !isGenerating && (
-                <div className="flex bg-zinc-900 rounded-lg p-0.5 border border-zinc-800">
+                <div className="flex bg-zinc-100 dark:bg-zinc-800 rounded-lg p-0.5 border border-zinc-200 dark:border-zinc-800">
                   <button 
                     onClick={() => setViewMode('text')}
-                    className={`px-3 py-1 text-xs font-medium rounded-md transition-all ${viewMode === 'text' ? 'bg-zinc-800 text-zinc-100 shadow-sm' : 'text-zinc-500 hover:text-zinc-300'}`}
+                    className={`px-3 py-1 text-xs font-medium rounded-md transition-all ${viewMode === 'text' ? 'bg-zinc-200 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 shadow-sm' : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-800 dark:text-zinc-300'}`}
                   >
                     Text
                   </button>
                   <button 
                     onClick={handleConvertToJson}
                     disabled={isConverting}
-                    className={`px-3 py-1 text-xs font-medium rounded-md transition-all flex items-center gap-1 ${viewMode === 'json' ? 'bg-zinc-800 text-zinc-100 shadow-sm' : 'text-zinc-500 hover:text-zinc-300'}`}
+                    className={`px-3 py-1 text-xs font-medium rounded-md transition-all flex items-center gap-1 ${viewMode === 'json' ? 'bg-zinc-200 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 shadow-sm' : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-800 dark:text-zinc-300'}`}
                   >
                     {isConverting && <div className="w-2 h-2 border-t-2 border-zinc-100 rounded-full animate-spin"></div>}
                     JSON
@@ -434,7 +434,7 @@ export const Workspace: React.FC<WorkspaceProps> = ({ onGenerated, initialTempla
             {output && (
               <button 
                 onClick={handleCopy}
-                className="text-xs text-zinc-400 hover:text-zinc-200 font-medium"
+                className="text-xs text-zinc-600 dark:text-zinc-400 hover:text-zinc-200 font-medium"
               >
                 Copy {viewMode.charAt(0).toUpperCase() + viewMode.slice(1)}
               </button>
@@ -443,7 +443,7 @@ export const Workspace: React.FC<WorkspaceProps> = ({ onGenerated, initialTempla
           
           <div 
             ref={outputRef}
-            className="flex-1 min-h-[400px] glass p-6 mono text-sm leading-relaxed overflow-y-auto relative group text-zinc-300 bg-[#09090b]/50"
+            className="flex-1 min-h-[400px] glass p-6 mono text-sm leading-relaxed overflow-y-auto relative group text-zinc-800 dark:text-zinc-300 bg-zinc-50/50 dark:bg-zinc-950/50"
           >
             {!output && !isGenerating ? (
               <div className="h-full flex flex-col items-center justify-center text-zinc-600 space-y-4">
@@ -464,7 +464,7 @@ export const Workspace: React.FC<WorkspaceProps> = ({ onGenerated, initialTempla
             
             {output && (
               <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                 <div className="bg-zinc-800/80 text-zinc-400 text-[10px] font-medium px-2 py-1 rounded border border-zinc-700 backdrop-blur-sm">
+                 <div className="bg-zinc-200 dark:bg-zinc-800/80 text-zinc-600 dark:text-zinc-400 text-[10px] font-medium px-2 py-1 rounded border border-zinc-300 dark:border-zinc-700 backdrop-blur-sm">
                    {viewMode === 'text' ? 'Ready' : 'Structured'}
                  </div>
               </div>

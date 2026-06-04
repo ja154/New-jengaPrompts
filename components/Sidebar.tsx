@@ -37,13 +37,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
       <aside className={`
         fixed lg:static inset-y-0 left-0 z-40
-        w-72 glass border-r border-[#27272a] h-full flex flex-col transition-transform duration-300 bg-[#09090b]/80 backdrop-blur-md
+        w-72 glass border-r border-zinc-200 dark:border-zinc-800 h-full flex flex-col transition-transform duration-300 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md
         ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
       `}>
         <div className="p-6">
           <div className="flex items-center justify-between mb-8">
-            <span className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">Navigation</span>
-            <button className="lg:hidden text-zinc-400 hover:text-zinc-200" onClick={() => setOpen(false)}>
+            <span className="text-xs font-semibold text-zinc-600 dark:text-zinc-400 uppercase tracking-wider">Navigation</span>
+            <button className="lg:hidden text-zinc-600 dark:text-zinc-400 hover:text-zinc-200" onClick={() => setOpen(false)}>
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
@@ -61,8 +61,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 className={`
                   w-full flex items-center justify-between px-3 py-2.5 rounded-lg transition-colors
                   ${activeTab === item.id 
-                    ? 'bg-zinc-800 text-zinc-100 font-medium' 
-                    : 'text-zinc-400 hover:bg-zinc-800/50 hover:text-zinc-200'}
+                    ? 'bg-zinc-200 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 font-medium' 
+                    : 'text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200 dark:bg-zinc-800/50 hover:text-zinc-200'}
                 `}
               >
                 <div className="flex items-center gap-3">
@@ -70,7 +70,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   <span className="text-sm">{item.label}</span>
                 </div>
                 {item.badge !== undefined && item.badge > 0 && (
-                  <span className={`px-2 py-0.5 rounded-full text-[10px] font-medium ${activeTab === item.id ? 'bg-zinc-700 text-zinc-200' : 'bg-zinc-800 text-zinc-500'}`}>
+                  <span className={`px-2 py-0.5 rounded-full text-[10px] font-medium ${activeTab === item.id ? 'bg-zinc-700 text-zinc-200' : 'bg-zinc-200 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400'}`}>
                     {item.badge}
                   </span>
                 )}
